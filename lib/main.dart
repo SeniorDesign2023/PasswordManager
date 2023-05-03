@@ -1,4 +1,5 @@
 import 'package:app/firebase_options.dart';
+import 'package:app/screens/user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:app/screens/landing_screen.dart';
 import 'package:app/screens/login_screen.dart';
@@ -23,6 +24,7 @@ class MainApp extends StatelessWidget {
         '/': (context) => const LandingScreen(),
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignUpScreen(),
+        '/user': (context) => const UserScreen(),
       },
     );
   }

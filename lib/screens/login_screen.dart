@@ -36,12 +36,17 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
+  void reRoute() {
+    Navigator.pushNamed(context, '/user');
+  }
+
   void _handleSubmit(uname, pword) async {
     print(uname + pword);
     try {
       final credential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: uname, password: pword);
       print(credential);
+      reRoute();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
