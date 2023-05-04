@@ -11,9 +11,48 @@ class UserScreen extends StatelessWidget {
     return Scaffold(
         body: UserWidget(),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => print('new entry pressed'),
-          child: const Icon(Icons.add),
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (_) {
+                  var nameController = TextEditingController();
+                  var pwordController = TextEditingController();
+                  return Center(
+                    child: Container(
+                      width: 300,
+                      height: 750,
+                      child: AlertDialog(
+                        title: Text('Enter a new password'),
+                        contentPadding: EdgeInsets.all(10),
+                        content: ListView(
+                          shrinkWrap: true,
+                          children: [
+                            TextFormField(
+                              controller: nameController,
+                              decoration:
+                                  InputDecoration(hintText: 'Account name'),
+                            ),
+                            TextFormField(
+                              controller: pwordController,
+                              decoration: InputDecoration(hintText: 'Password'),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          ElevatedButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text('Cancel')),
+                          ElevatedButton(
+                              onPressed: () => print('new password pressed'),
+                              child: Text('Submit'))
+                        ],
+                      ),
+                    ),
+                  );
+                });
+          },
           backgroundColor: Colors.green,
+          child: const Icon(Icons.add),
         ));
   }
 }

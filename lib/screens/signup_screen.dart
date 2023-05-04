@@ -88,6 +88,7 @@ class SignUpFormState extends State<SignUpForm> {
               ),
               TextFormField(
                   controller: _pwordController,
+                  obscureText: true,
                   decoration: InputDecoration(
                       hintText: 'Password',
                       border: OutlineInputBorder(
@@ -101,6 +102,7 @@ class SignUpFormState extends State<SignUpForm> {
                   }),
               TextFormField(
                   controller: _pwordConfirmationController,
+                  obscureText: true,
                   decoration: InputDecoration(
                       hintText: 'Confirm Password',
                       border: OutlineInputBorder(
