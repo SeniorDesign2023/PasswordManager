@@ -59,48 +59,52 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _loginFormKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextFormField(
-            controller: _unameController,
-            decoration: InputDecoration(
-                hintText: 'Username',
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blueGrey, width: 10),
-                    borderRadius: BorderRadius.circular(5))),
-            onFieldSubmitted: (value) {
-              _handleSubmit(value, _pwordController.text);
-              _unameController.clear();
-              _pwordController.clear();
-            },
+        key: _loginFormKey,
+        child: Padding(
+          padding: EdgeInsets.all(50),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextFormField(
+                controller: _unameController,
+                decoration: InputDecoration(
+                    hintText: 'Username',
+                    border: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.blueGrey, width: 10),
+                        borderRadius: BorderRadius.circular(5))),
+                onFieldSubmitted: (value) {
+                  _handleSubmit(value, _pwordController.text);
+                  _unameController.clear();
+                  _pwordController.clear();
+                },
+              ),
+              TextFormField(
+                controller: _pwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                    hintText: 'Password',
+                    border: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.blueGrey, width: 10),
+                        borderRadius: BorderRadius.circular(5))),
+                onFieldSubmitted: (value) {
+                  _handleSubmit(_unameController.text, value);
+                  _unameController.clear();
+                  _pwordController.clear();
+                },
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    print('submit button pressed');
+                    _handleSubmit(_unameController.text, _pwordController.text);
+                    _unameController.clear();
+                    _pwordController.clear();
+                  },
+                  child: Text('Submit'))
+            ],
           ),
-          TextFormField(
-            controller: _pwordController,
-            obscureText: true,
-            decoration: InputDecoration(
-                hintText: 'Password',
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blueGrey, width: 10),
-                    borderRadius: BorderRadius.circular(5))),
-            onFieldSubmitted: (value) {
-              _handleSubmit(_unameController.text, value);
-              _unameController.clear();
-              _pwordController.clear();
-            },
-          ),
-          ElevatedButton(
-              onPressed: () {
-                print('submit button pressed');
-                _handleSubmit(_unameController.text, _pwordController.text);
-                _unameController.clear();
-                _pwordController.clear();
-              },
-              child: Text('Submit'))
-        ],
-      ),
-    );
+        ));
   }
 }

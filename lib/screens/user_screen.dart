@@ -8,7 +8,13 @@ class UserScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: UserWidget());
+    return Scaffold(
+        body: UserWidget(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => print('new entry pressed'),
+          child: const Icon(Icons.add),
+          backgroundColor: Colors.green,
+        ));
   }
 }
 
@@ -55,13 +61,19 @@ class _UserWidgetState extends State<UserWidget> {
                       var currentEntry = snapshot.data?.elementAt(index);
                       return Card(
                           child: InkWell(
-                        splashColor: Colors.blue,
-                        onTap: () async {
-                          await Clipboard.setData(
-                              ClipboardData(text: '${currentEntry.pword}'));
-                        },
-                        child: Text('${currentEntry.name}'),
-                      ));
+                              splashColor: Colors.blue,
+                              onTap: () async {
+                                await Clipboard.setData(ClipboardData(
+                                    text: '${currentEntry.pword}'));
+                              },
+                              child: SizedBox(
+                                width: 400,
+                                height: 150,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [Text('${currentEntry.name}')],
+                                ),
+                              )));
                     })
               ];
             } else if (snapshot.hasError) {

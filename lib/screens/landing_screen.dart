@@ -11,23 +11,29 @@ class LandingScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text('Please log in or sign up'),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-                onPressed: () {
-                  debugPrint("login button pressed");
-                  Navigator.pushNamed(context, '/login');
-                },
-                child: Text('Login')),
-            ElevatedButton(
-                onPressed: () {
-                  debugPrint("sign up button pressed");
-                  Navigator.pushNamed(context, '/signup');
-                },
-                child: Text('Sign up'))
-          ],
-        )
+        Padding(
+            padding: EdgeInsets.all(150),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      debugPrint("login button pressed");
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    child: Text('Login')),
+                Container(
+                  width: 50,
+                  color: Colors.transparent,
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      debugPrint("sign up button pressed");
+                      Navigator.pushNamed(context, '/signup');
+                    },
+                    child: Text('Sign up'))
+              ],
+            ))
       ],
     ));
   }
