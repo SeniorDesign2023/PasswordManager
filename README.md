@@ -11,4 +11,4 @@ Once all dependencies have been resolved, run the command
 
 # Usage
 
-To use this app, a user must sign up with an email address and password. Once that has been accomplished, users are able to add passwords and their corresponding accound names to the manager. From there users are able to copy their saved passwords to their clipboard for useage outside of the app. 
+To use this app, a user must sign up with an email address and password. Once that has been accomplished, users are able to add passwords and their corresponding accound names to the manager. From there users are able to copy their saved passwords to their clipboard for utilization outside of the app. 
