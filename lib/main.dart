@@ -5,7 +5,8 @@ import 'package:app/screens/landing_screen.dart';
 import 'package:app/screens/login_screen.dart';
 import 'package:app/screens/signup_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-//import 'app_state.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,8 +14,22 @@ Future<void> main() async {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  static String _seed = '';
+
+  void setseed(string) {
+    _seed = md5.convert(utf8.encode(string)).toString();
+    print(_seed);
+  }
+
+  String getseed() => _seed;
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +38,9 @@ class MainApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const LandingScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/signup': (context) => const SignUpScreen(),
-        '/user': (context) => const UserScreen(),
+        '/login': (context) => LoginScreen(function: setseed),
+        '/signup': (context) => SignUpScreen(function: setseed),
+        '/user': (context) => UserScreen(function: getseed),
       },
     );
   }

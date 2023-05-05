@@ -2,20 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
-import 'package:encrypt/encrypt.dart' as spicySalsa;
-import 'dart:convert';
+import 'package:encrypt/encrypt.dart' as spicy_salsa;
 
 class UserScreen extends StatelessWidget {
-  const UserScreen({super.key});
+  UserScreen({super.key, required this.function});
+
+  Function function;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: UserWidget());
+    return Scaffold(
+        body: UserWidget(
+      function: function,
+    ));
   }
 }
 
 class UserWidget extends StatefulWidget {
-  const UserWidget({super.key});
+  UserWidget({super.key, required this.function});
+
+  Function function;
 
   @override
   _UserWidgetState createState() => _UserWidgetState();
@@ -24,15 +30,14 @@ class UserWidget extends StatefulWidget {
 class _UserWidgetState extends State<UserWidget> {
   final user = FirebaseAuth.instance.currentUser;
   final db = FirebaseFirestore.instance;
+  String seed = '';
   String? emailaddress = '';
 
   Future<List> populateCards() async {
     var cards = [];
     var data = await db.collection(emailaddress.toString()).get();
     for (var docSnapshot in data.docs) {
-      print('${docSnapshot.id} => ${docSnapshot.data()}');
       cards.add(Entry.fromFirestore(docSnapshot, null));
-      print(cards);
     }
     return cards;
   }
@@ -45,8 +50,8 @@ class _UserWidgetState extends State<UserWidget> {
 
   @override
   Widget build(BuildContext context) {
+    seed = widget.function();
     emailaddress = user?.email;
-    print(emailaddress);
     var cardlist = populateCards();
     return Scaffold(
         body: FutureBuilder(
@@ -64,10 +69,10 @@ class _UserWidgetState extends State<UserWidget> {
                         return Card(
                             child: InkWell(
                                 splashColor: Colors.blue,
-                                onTap: () async {
-                                  await Clipboard.setData(ClipboardData(
-                                      text: salsaDecrypt(currentEntry.pword,
-                                          'thisisathirtytwobitteststringlol')));
+                                onTap: () {
+                                  Clipboard.setData(ClipboardData(
+                                      text: salsaDecrypt(
+                                          currentEntry.pword, seed)));
                                 },
                                 child: SizedBox(
                                   width: 400,
@@ -135,11 +140,13 @@ class _UserWidgetState extends State<UserWidget> {
                               onFieldSubmitted: (value) {
                                 Map<String, dynamic> saveData = {
                                   'name': nameController.text,
-                                  'pword': pwordController.text
+                                  'pword':
+                                      salsaEncrypt(pwordController.text, seed)
                                 };
                                 nameController.clear();
                                 pwordController.clear();
                                 addEntry(saveData);
+                                cardlist = populateCards();
                               },
                             ),
                             TextFormField(
@@ -149,11 +156,13 @@ class _UserWidgetState extends State<UserWidget> {
                               onFieldSubmitted: (value) {
                                 Map<String, dynamic> saveData = {
                                   'name': nameController.text,
-                                  'pword': pwordController.text
+                                  'pword':
+                                      salsaEncrypt(pwordController.text, seed)
                                 };
                                 nameController.clear();
                                 pwordController.clear();
                                 addEntry(saveData);
+                                cardlist = populateCards();
                               },
                             ),
                           ],
@@ -166,12 +175,13 @@ class _UserWidgetState extends State<UserWidget> {
                               onPressed: () {
                                 Map<String, dynamic> saveData = {
                                   'name': nameController.text,
-                                  'pword': salsaEncrypt(pwordController.text,
-                                      'thisisathirtytwobitteststringlol')
+                                  'pword':
+                                      salsaEncrypt(pwordController.text, seed)
                                 };
                                 nameController.clear();
                                 pwordController.clear();
                                 addEntry(saveData);
+                                cardlist = populateCards();
                               },
                               child: Text('Submit'))
                         ],
@@ -197,7 +207,6 @@ class Entry {
     SnapshotOptions? options,
   ) {
     final data = snapshot.data();
-    print(data);
     return Entry(
       name: data?['name'],
       pword: data?['pword'],
@@ -206,19 +215,19 @@ class Entry {
 }
 
 String salsaEncrypt(String text, String seed) {
-  final key = spicySalsa.Key.fromUtf8(seed);
-  final iv = spicySalsa.IV.fromLength(8);
-  final encrypter = spicySalsa.Encrypter(spicySalsa.Salsa20(key));
+  final key = spicy_salsa.Key.fromUtf8(seed);
+  final iv = spicy_salsa.IV.fromLength(8);
+  final encrypter = spicy_salsa.Encrypter(spicy_salsa.Salsa20(key));
 
   return encrypter.encrypt(text, iv: iv).base64;
 }
 
 String salsaDecrypt(String text, String seed) {
-  final key = spicySalsa.Key.fromUtf8(seed);
-  final iv = spicySalsa.IV.fromLength(8);
-  final decrypter = spicySalsa.Encrypter(spicySalsa.Salsa20(key));
+  final key = spicy_salsa.Key.fromUtf8(seed);
+  final iv = spicy_salsa.IV.fromLength(8);
+  final decrypter = spicy_salsa.Encrypter(spicy_salsa.Salsa20(key));
 
   return decrypter
-      .decrypt(spicySalsa.Encrypted.from64(text), iv: iv)
+      .decrypt(spicy_salsa.Encrypted.from64(text), iv: iv)
       .toString();
 }

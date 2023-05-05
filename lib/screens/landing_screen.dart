@@ -18,7 +18,6 @@ class LandingScreen extends StatelessWidget {
               children: [
                 ElevatedButton(
                     onPressed: () {
-                      debugPrint("login button pressed");
                       Navigator.pushNamed(context, '/login');
                     },
                     child: Text('Login')),
@@ -28,7 +27,6 @@ class LandingScreen extends StatelessWidget {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      debugPrint("sign up button pressed");
                       Navigator.pushNamed(context, '/signup');
                     },
                     child: Text('Sign up'))

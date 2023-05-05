@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  LoginScreen({Key? key, required this.function}) : super(key: key);
+
+  Function function;
 
   @override
   Widget build(BuildContext context) {
@@ -10,14 +12,16 @@ class LoginScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [LoginForm()],
+        children: [LoginForm(function: function)],
       ),
     );
   }
 }
 
 class LoginForm extends StatefulWidget {
-  LoginForm({super.key});
+  LoginForm({super.key, required this.function});
+
+  Function function;
 
   @override
   _LoginFormState createState() => _LoginFormState();
@@ -37,7 +41,10 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void reRoute() {
-    Navigator.pushNamed(context, '/user');
+    Navigator.pushNamed(
+      context,
+      '/user',
+    );
   }
 
   void _handleSubmit(uname, pword) async {
@@ -45,7 +52,7 @@ class _LoginFormState extends State<LoginForm> {
     try {
       final credential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: uname, password: pword);
-      print(credential);
+      widget.function(pword);
       reRoute();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpScreen extends StatelessWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  SignUpScreen({Key? key, required this.function}) : super(key: key);
+
+  Function function;
 
   @override
   Widget build(BuildContext context) {
@@ -10,14 +12,16 @@ class SignUpScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [SignUpForm()],
+        children: [SignUpForm(function: function)],
       ),
     );
   }
 }
 
 class SignUpForm extends StatefulWidget {
-  const SignUpForm({super.key});
+  SignUpForm({super.key, required this.function});
+
+  Function function;
 
   @override
   SignUpFormState createState() => SignUpFormState();
@@ -55,6 +59,7 @@ class SignUpFormState extends State<SignUpForm> {
       try {
         final credential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: uname, password: pword);
+        widget.function(pword);
         reRoute();
       } on FirebaseAuthException catch (e) {
         print('Something went wrong');
@@ -83,7 +88,9 @@ class SignUpFormState extends State<SignUpForm> {
                 onFieldSubmitted: (value) {
                   _handleSubmit(value, _pwordController.text,
                       _pwordConfirmationController.text);
-                  dispose();
+                  _pwordConfirmationController.clear();
+                  _pwordController.clear();
+                  _unameController.clear();
                 },
               ),
               TextFormField(
@@ -98,7 +105,9 @@ class SignUpFormState extends State<SignUpForm> {
                   onFieldSubmitted: (value) {
                     _handleSubmit(_unameController.text, value,
                         _pwordConfirmationController.text);
-                    dispose();
+                    _pwordConfirmationController.clear();
+                    _pwordController.clear();
+                    _unameController.clear();
                   }),
               TextFormField(
                   controller: _pwordConfirmationController,
@@ -112,7 +121,9 @@ class SignUpFormState extends State<SignUpForm> {
                   onFieldSubmitted: (value) {
                     _handleSubmit(
                         _unameController.text, _pwordController.text, value);
-                    dispose();
+                    _pwordConfirmationController.clear();
+                    _pwordController.clear();
+                    _unameController.clear();
                   }),
               ElevatedButton(
                   onPressed: () => _handleSubmit(_unameController.text,
