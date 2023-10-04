@@ -1,9 +1,14 @@
 # password_manager
 This is a password manager using the Flutter framework, originally created for COSC 4010 Secure Software Design at the University of Wyoming and is currently being continued as a senior design project at the same institution.
+
 Current development team:
+
 Matthew Bare
+
 Zachary Hunt
+
 Tyler O'Dowd
+
 Cody Danielson
 
 # Installation 
