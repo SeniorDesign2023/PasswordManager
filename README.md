@@ -14,7 +14,7 @@ Cody Danielson
 # Installation 
 This project requires the flutter sdk to run. An installation guide for that can be found [here](https://docs.flutter.dev/get-started/install)
 
-Navigate to the ../password_manager/ directory and run the command
+Navigate to the ../PasswordManager/ directory and run the command
 >flutter pub get
 
 Once all dependencies have been resolved, run the command 
