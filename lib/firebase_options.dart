@@ -27,15 +27,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return linux;
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -78,5 +72,23 @@ class DefaultFirebaseOptions {
     storageBucket: 'passwordmanager-d4a10.appspot.com',
     iosClientId: '523652369638-m64ff32h055cmhlln93h3dol6st3eqjc.apps.googleusercontent.com',
     iosBundleId: 'com.example.app',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyC7PHpCIC52M_ypgfGRpi87xSMt_EVNZyo',
+    appId: '1:523652369638:web:a2ae61e533e8b403c5bf27',
+    messagingSenderId: '523652369638',
+    projectId: 'passwordmanager-d4a10',
+    authDomain: 'passwordmanager-d4a10.firebaseapp.com',
+    storageBucket: 'passwordmanager-d4a10.appspot.com',
+  );
+
+  static const FirebaseOptions linux = FirebaseOptions(
+    apiKey: 'AIzaSyC7PHpCIC52M_ypgfGRpi87xSMt_EVNZyo',
+    appId: '1:523652369638:web:73c118e3e0acc10ec5bf27',
+    messagingSenderId: '523652369638',
+    projectId: 'passwordmanager-d4a10',
+    authDomain: 'passwordmanager-d4a10.firebaseapp.com',
+    storageBucket: 'passwordmanager-d4a10.appspot.com',
   );
 }
