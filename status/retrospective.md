@@ -1,18 +1,18 @@
 # Matt:
 * what went well?
-*  
+*  Having a unified direction and previous work done from the start really helped move things forward at every step.
 * What didnt go so well?
-*  
+*  Reducing the scope of the project in order to better enable us to get it done in time was a little rough.
 * What have we learned?
-*  
+*  Revising the original plan is not only okay, but necessary a lot of the time.
 * What are still issues/problems/puzzles?
-*  
+*  Database syncing/management as well as other general security concerns.
 * What recommendations would you make for Senior design 1 for next fall? 
-*  
+*  Even though Senior Design 1 focuses primarily on the planning portion of the project, getting some code written in the early stages can really help show design flaws that may need addressed.
 * What went well and worked and should be continued?
-*  
+*  Regular mentor meetings were very insightful and helped to flesh out parts that we hadn't thought of as a group.
 * What didn't go so well and should be changed?
-*  
+*  Nothing really comes to mind.
 
 # Cody: 
 * what went well?
