@@ -5,8 +5,6 @@ Current development team:
 
 Matthew Bare
 
-Zachary Hunt
-
 Tyler O'Dowd
 
 Cody Danielson
