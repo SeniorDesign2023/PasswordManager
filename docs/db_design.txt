@@ -1,0 +1,182 @@
+// singular remote firebase db
+REMOTE_MASTER
+
+//maps email -> (accountId, password)
+tbl_accounts
+    -> email                (primary key)
+    -> accountId			(foreign key)   //ties all a users devices eachother on a pm account
+    -> ...
+    -> version
+    -> active
+    -> ...
+
+    //maps accountId -> deviceId
+    tbl_devices
+        -> deviceId         (primary key)
+        -> accountId        (foreign key)
+
+
+    //maps accountId -> sync
+    tbl_sync
+        -> accountId		(primary key)
+        -> modDate
+        -> syncFlag
+        -> ...
+        -> version
+        -> active
+        -> ...
+
+
+--------------------------------
+Comms:
+
+
+addAccount:
+    diffie-hellman exchange()
+    Account transfer:
+        deviceId -> remote
+        accountId -> remote
+        email/username -> remote
+        localModDate -> remote
+
+addDevice:
+    accountId -> remote
+    deviceId -> remote
+
+removeDevice:
+    accountId -> remote
+    deviceId -> remote
+    localModDate -> remote
+
+    if localModDate < remoteModDate
+        remove = true
+
+    if syncFlag = true
+        if localModDate = remoteModDate
+            confirmation required // must be device that needs synced
+                remove
+                    remove()
+                sync & remove
+                    initSync()
+                    remove()
+                cancel
+                    initSync()
+        if localModDate > remoteModDate
+            confirmation required // needs synced, but so does another device, ask to merge
+                remove
+                    remove()
+                merge & remove
+                    mergeSync()
+                    remove()
+                cancel
+                    mergeSync()
+        if localModDate < remoteModDate
+            
+        
+    
+    if localmodDate = remoteModDate && syncFlag = true  // must be device that needs synced
+        confirmation required
+            if remove -> syncFlag = false
+            remoteModDate = ver - 1
+
+    if localModDate > remoteModDate && syncFlag = true   
+
+updateRemote:
+    accountId -> remote
+    deviceId -> remote
+    localModDate -> remote
+
+    if localModDate > remoteModDate
+        if syncFlag = false
+            syncFlag = true
+            initSync()
+        if syncFlag = false
+            mergeSync()
+
+    if localModDate < remoteModDate
+
+
+--------------------------------
+
+
+// singleton LOCAL_MAIN
+// allows multiple accounts on same device
+// only 1 logged in at a time
+LOCAL_MAIN:
+
+// maps deviceId -> (LOCAL_ACCOUNT, accountPassword)
+tbl_accounts
+    -> deviceId 		(primary key) 	//unique to pm_account and device
+    -> accountId 		(foreign key) 	//unique to pm_account, shared across devices 
+    -> remoteToken                      //30 day remote access token
+    -> localToken                       //keeps LOCAL_ACCOUNT from encrypting
+    -> LOCAL_ACCOUNT
+    -> ...
+    -> version
+    -> active
+    -> ...
+
+    tbl_localAccess
+        -> device/accountID     ?
+        -> localAccessToken
+        -> 
+
+-------------------------------
+
+// instance of a LOCAL_ACCOUNT
+LOCAL_ACCOUNT:
+
+// everything required for client2client syncing
+// no key (does it need one?)
+tbl_accountSync
+    -> enc_remoteModDate       //encoded with remote_token?
+    -> enc_localModDate        // encode with remoteModDate + salt
+    -> ...
+    -> version              (primary key)
+    -> active
+    -> ...
+
+// accounts global settings with redundancy
+tbl_accountSettings
+    -> ...
+    -> version
+    -> active
+    -> ...
+
+// accounts app settings for client with redundancy
+tbl_appSettings
+    -> ...
+    -> version
+    -> active
+    -> ...
+
+// maps domainId  -> userAccountId
+tbl_domains
+    -> domainId 		    (primary key)
+    -> userAccountId	    (foreign key)
+    -> ...
+    -> version
+    -> active
+    -> ...
+
+    // maps userAccountId -> (domainID, urlId)
+    tbl_user_accounts
+        -> userAccountId 	(primary key)
+        -> domainId 		(foreign key)
+        -> urlId		    (foreign key)
+        -> username
+        -> password
+        -> ...
+        -> version
+        -> active
+        -> ...
+
+        tbl_urls
+            -> urlId 	        (primary key)
+            -> domainId 		(foreign key)
+            -> url
+            -> ...
+            -> version
+            -> active
+            -> ...
+
