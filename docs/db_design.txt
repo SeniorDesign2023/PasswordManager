@@ -1,125 +1,52 @@
+Some notes:
+
+every table will likely have additonal columns for version history
+(for example:)
+    -> version
+    -> createTime
+    -> active
+
+there will likely be a need for other columns to handle:
+    - account authentication
+    - Google Cloud Gateway API tokens
+    - Firebase tokens for data pushing
+    - i'm sure there are more
+
+====================
 // singular remote firebase db
-REMOTE_MASTER
+REMOTE_ACCOUNT
 
 //maps email -> (accountId, password)
 tbl_accounts
-    -> email                (primary key)
+    -> email/username       (primary key)
     -> accountId			(foreign key)   //ties all a users devices eachother on a pm account
-    -> ...
-    -> version
-    -> active
-    -> ...
 
     //maps accountId -> deviceId
     tbl_devices
         -> deviceId         (primary key)
         -> accountId        (foreign key)
-
+        -> token                            //grants a device access to REMOTE_ACCOUNT
 
     //maps accountId -> sync
     tbl_sync
         -> accountId		(primary key)
-        -> modDate
-        -> syncFlag
-        -> ...
-        -> version
-        -> active
-        -> ...
-
+        -> modifiedTime                     //datetime some device made some modification to localDB (account settings or username/password change/add/etc)
+        -> syncFlag                         //means some other device was able to sync the modification, i.e. 2 devices have the modification (redundancy)
 
 --------------------------------
-Comms:
-
-
-addAccount:
-    diffie-hellman exchange()
-    Account transfer:
-        deviceId -> remote
-        accountId -> remote
-        email/username -> remote
-        localModDate -> remote
-
-addDevice:
-    accountId -> remote
-    deviceId -> remote
-
-removeDevice:
-    accountId -> remote
-    deviceId -> remote
-    localModDate -> remote
-
-    if localModDate < remoteModDate
-        remove = true
-
-    if syncFlag = true
-        if localModDate = remoteModDate
-            confirmation required // must be device that needs synced
-                remove
-                    remove()
-                sync & remove
-                    initSync()
-                    remove()
-                cancel
-                    initSync()
-        if localModDate > remoteModDate
-            confirmation required // needs synced, but so does another device, ask to merge
-                remove
-                    remove()
-                merge & remove
-                    mergeSync()
-                    remove()
-                cancel
-                    mergeSync()
-        if localModDate < remoteModDate
-            
-        
-    
-    if localmodDate = remoteModDate && syncFlag = true  // must be device that needs synced
-        confirmation required
-            if remove -> syncFlag = false
-            remoteModDate = ver - 1
-
-    if localModDate > remoteModDate && syncFlag = true   
-
-updateRemote:
-    accountId -> remote
-    deviceId -> remote
-    localModDate -> remote
-
-    if localModDate > remoteModDate
-        if syncFlag = false
-            syncFlag = true
-            initSync()
-        if syncFlag = false
-            mergeSync()
-
-    if localModDate < remoteModDate
-
-
 --------------------------------
-
 
 // singleton LOCAL_MAIN
 // allows multiple accounts on same device
 // only 1 logged in at a time
 LOCAL_MAIN:
 
-// maps deviceId -> (LOCAL_ACCOUNT, accountPassword)
 tbl_accounts
     -> deviceId 		(primary key) 	//unique to pm_account and device
     -> accountId 		(foreign key) 	//unique to pm_account, shared across devices 
-    -> remoteToken                      //30 day remote access token
-    -> localToken                       //keeps LOCAL_ACCOUNT from encrypting
-    -> LOCAL_ACCOUNT
-    -> ...
-    -> version
-    -> active
-    -> ...
-
-    tbl_localAccess
-        -> device/accountID     ?
-        -> localAccessToken
-        -> 
+    -> remoteToken                      //grants access to REMOTE_ACCOUNT
+    -> localToken                       //grants access to LOCAL_ACCOUNT instance (could this just be an decryption key to LOCAL_ACCOUNT db instance? perhaps AES)
+    -> LOCAL_ACCOUNT                    //mapping to LOCAL_ACCOUNT instance
 
 -------------------------------
 
@@ -129,35 +56,22 @@ LOCAL_ACCOUNT:
 // everything required for client2client syncing
 // no key (does it need one?)
 tbl_accountSync
-    -> enc_remoteModDate       //encoded with remote_token?
-    -> enc_localModDate        // encode with remoteModDate + salt
-    -> ...
-    -> version              (primary key)
-    -> active
-    -> ...
+    -> remoteModifiedTime
+    -> remoteSyncFlag
+    -> localModifiedTime
 
-// accounts global settings with redundancy
+// accounts settings (shared between devices)
 tbl_accountSettings
     -> ...
-    -> version
-    -> active
-    -> ...
 
-// accounts app settings for client with redundancy
+// accounts app settings (specific to device)
 tbl_appSettings
-    -> ...
-    -> version
-    -> active
     -> ...
 
 // maps domainId  -> userAccountId
 tbl_domains
     -> domainId 		    (primary key)
     -> userAccountId	    (foreign key)
-    -> ...
-    -> version
-    -> active
-    -> ...
 
     // maps userAccountId -> (domainID, urlId)
     tbl_user_accounts
@@ -166,17 +80,8 @@ tbl_domains
         -> urlId		    (foreign key)
         -> username
         -> password
-        -> ...
-        -> version
-        -> active
-        -> ...
 
         tbl_urls
             -> urlId 	        (primary key)
             -> domainId 		(foreign key)
             -> url
-            -> ...
-            -> version
-            -> active
-            -> ...
-
