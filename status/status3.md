@@ -34,7 +34,7 @@ Confidence:
 
 Matt - 4
 Cody - 
-Tyler - 
+Tyler - 4
 
 Group average -
 
