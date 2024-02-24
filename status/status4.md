@@ -42,8 +42,8 @@ Confidence
 
 Matt - 3
 
-Tyler - 
+Tyler - 2
 
 Cody - ???
 
-Group Average -
+Group Average - 2.5?
