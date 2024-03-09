@@ -38,57 +38,58 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyC7PHpCIC52M_ypgfGRpi87xSMt_EVNZyo',
-    appId: '1:523652369638:web:345a0b71b00a9213c5bf27',
+    apiKey: 'AIzaSyDPCWi7Xorvg9G5TA2ha5SEHTZKMSHmCx8',
+    appId: '1:841985936375:web:455031f61436f9ded1fcf2',
     messagingSenderId: '523652369638',
-    projectId: 'passwordmanager-d4a10',
-    authDomain: 'passwordmanager-d4a10.firebaseapp.com',
-    storageBucket: 'passwordmanager-d4a10.appspot.com',
+    projectId: 'cosc-4995-ui-0',
+    authDomain: 'cosc-4995-ui-0.firebaseapp.com',
+    storageBucket: 'cosc-4995-ui-0.appspot.com'
+//    measurementId: "G-MM7BNXL21D"
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDzAzit7LvToQyx7rtak6tVHxYoccp1rmI',
-    appId: '1:523652369638:android:d9a5f8795c84560cc5bf27',
+    apiKey: 'AIzaSyDPCWi7Xorvg9G5TA2ha5SEHTZKMSHmCx8',
+    appId: '1:841985936375:web:455031f61436f9ded1fcf2',
     messagingSenderId: '523652369638',
-    projectId: 'passwordmanager-d4a10',
-    storageBucket: 'passwordmanager-d4a10.appspot.com',
+    projectId: 'cosc-4995-ui-0',
+    storageBucket: 'cosc-4995-ui-0.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDmWabj-tXRUo5dJ0mCjg0FZrPmklfpZOs',
-    appId: '1:523652369638:ios:fb2736642f60702ec5bf27',
+    apiKey: 'AIzaSyDPCWi7Xorvg9G5TA2ha5SEHTZKMSHmCx8',
+    appId: '1:841985936375:web:455031f61436f9ded1fcf2',
     messagingSenderId: '523652369638',
-    projectId: 'passwordmanager-d4a10',
-    storageBucket: 'passwordmanager-d4a10.appspot.com',
+    projectId: 'cosc-4995-ui-0',
+    storageBucket: 'cosc-4995-ui-0.appspot.com',
     iosClientId: '523652369638-m64ff32h055cmhlln93h3dol6st3eqjc.apps.googleusercontent.com',
-    iosBundleId: 'com.example.app',
+    iosBundleId: 'com.example.app'
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDmWabj-tXRUo5dJ0mCjg0FZrPmklfpZOs',
-    appId: '1:523652369638:ios:fb2736642f60702ec5bf27',
+    apiKey: 'AIzaSyDPCWi7Xorvg9G5TA2ha5SEHTZKMSHmCx8',
+    appId: '1:841985936375:web:455031f61436f9ded1fcf2',
     messagingSenderId: '523652369638',
-    projectId: 'passwordmanager-d4a10',
-    storageBucket: 'passwordmanager-d4a10.appspot.com',
+    projectId: 'cosc-4995-ui-0',
+    storageBucket: 'cosc-4995-ui-0.appspot.com',
     iosClientId: '523652369638-m64ff32h055cmhlln93h3dol6st3eqjc.apps.googleusercontent.com',
-    iosBundleId: 'com.example.app',
+    iosBundleId: 'com.example.app'
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyC7PHpCIC52M_ypgfGRpi87xSMt_EVNZyo',
-    appId: '1:523652369638:web:a2ae61e533e8b403c5bf27',
+    apiKey: 'AIzaSyDPCWi7Xorvg9G5TA2ha5SEHTZKMSHmCx8',
+    appId: '1:841985936375:web:455031f61436f9ded1fcf2',
     messagingSenderId: '523652369638',
-    projectId: 'passwordmanager-d4a10',
-    authDomain: 'passwordmanager-d4a10.firebaseapp.com',
-    storageBucket: 'passwordmanager-d4a10.appspot.com',
+    projectId: 'cosc-4995-ui-0',
+    authDomain: 'cosc-4995-ui-0.firebaseapp.com',
+    storageBucket: 'cosc-4995-ui-0.appspot.com'
   );
 
   static const FirebaseOptions linux = FirebaseOptions(
-    apiKey: 'AIzaSyC7PHpCIC52M_ypgfGRpi87xSMt_EVNZyo',
-    appId: '1:523652369638:web:73c118e3e0acc10ec5bf27',
+    apiKey: 'AIzaSyDPCWi7Xorvg9G5TA2ha5SEHTZKMSHmCx8',
+    appId: '1:841985936375:web:455031f61436f9ded1fcf2',
     messagingSenderId: '523652369638',
-    projectId: 'passwordmanager-d4a10',
-    authDomain: 'passwordmanager-d4a10.firebaseapp.com',
-    storageBucket: 'passwordmanager-d4a10.appspot.com',
+    projectId: 'cosc-4995-ui-0',
+    authDomain: 'cosc-4995-ui-0.firebaseapp.com',
+    storageBucket: 'cosc-4995-ui-0.appspot.com'
   );
 }
