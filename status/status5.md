@@ -40,7 +40,7 @@ Confidence:
 
 Matt - 3
 
-Tyler - 
+Tyler - 2.75
 
 Group - 
 
