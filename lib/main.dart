@@ -1,3 +1,4 @@
+import 'package:app/UILibrary.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/screens/user_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,9 @@ import 'dart:convert';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  print("started");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  print("firebase init done");
   runApp(const MainApp());
 }
 
@@ -18,10 +21,10 @@ class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
   @override
-  State<MainApp> createState() => _MainAppState();
+  State<MainApp> createState() => MainAppState();
 }
 
-class _MainAppState extends State<MainApp> {
+class MainAppState extends State<MainApp> {
   static String _seed = '';
 
   void setseed(string) {
@@ -31,10 +34,16 @@ class _MainAppState extends State<MainApp> {
 
   String getseed() => _seed;
 
+  //Changing theme
+  void changeTheme() {
+    ColourTheme.updateTheme();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.dark(),
+      debugShowCheckedModeBanner: false,
+      theme: ColourTheme.theme,
       initialRoute: '/',
       routes: {
         '/': (context) => const LandingScreen(),

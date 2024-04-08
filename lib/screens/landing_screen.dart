@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app/UILibrary.dart';
 
 class LandingScreen extends StatelessWidget {
   const LandingScreen({super.key});
@@ -6,11 +7,12 @@ class LandingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: UILibrary.landingPageAuthPageBar(context),
         body: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text('Please log in or sign up'),
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+        const Text('Please log in or sign up'),
         Padding(
             padding: EdgeInsets.all(150),
             child: Row(

@@ -1,3 +1,4 @@
+import 'package:app/UILibrary.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -9,6 +10,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: UILibrary.userAuthPageBar(context),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -40,20 +42,13 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
-  void reRoute() {
-    Navigator.pushNamed(
-      context,
-      '/user',
-    );
-  }
-
   void _handleSubmit(uname, pword) async {
     print(uname + pword);
     try {
       final credential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: uname, password: pword);
       widget.function(pword);
-      reRoute();
+      UILibrary.reRoute(context);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');

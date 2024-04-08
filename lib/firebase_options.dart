@@ -27,9 +27,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
-        return linux;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for linux - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -38,58 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDPCWi7Xorvg9G5TA2ha5SEHTZKMSHmCx8',
-    appId: '1:841985936375:web:455031f61436f9ded1fcf2',
-    messagingSenderId: '523652369638',
-    projectId: 'cosc-4995-ui-0',
-    authDomain: 'cosc-4995-ui-0.firebaseapp.com',
-    storageBucket: 'cosc-4995-ui-0.appspot.com'
-//    measurementId: "G-MM7BNXL21D"
+    apiKey: 'AIzaSyCnx70B4DW6Rzo3K-laJvQa9iAp8CrUWBo',
+    appId: '1:727588511842:web:d62dc2cf697b6873a9313b',
+    messagingSenderId: '727588511842',
+    projectId: 'cosc4995-ui-1',
+    authDomain: 'cosc4995-ui-1.firebaseapp.com',
+    storageBucket: 'cosc4995-ui-1.appspot.com',
+    measurementId: 'G-DCD9NXFKWC',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDPCWi7Xorvg9G5TA2ha5SEHTZKMSHmCx8',
-    appId: '1:841985936375:web:455031f61436f9ded1fcf2',
-    messagingSenderId: '523652369638',
-    projectId: 'cosc-4995-ui-0',
-    storageBucket: 'cosc-4995-ui-0.appspot.com',
+    apiKey: 'AIzaSyDFxjk0Nf4zYQxYgSkPZmFv17iP5AOIE-I',
+    appId: '1:727588511842:android:8c50f1fc254a9397a9313b',
+    messagingSenderId: '727588511842',
+    projectId: 'cosc4995-ui-1',
+    storageBucket: 'cosc4995-ui-1.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDPCWi7Xorvg9G5TA2ha5SEHTZKMSHmCx8',
-    appId: '1:841985936375:web:455031f61436f9ded1fcf2',
-    messagingSenderId: '523652369638',
-    projectId: 'cosc-4995-ui-0',
-    storageBucket: 'cosc-4995-ui-0.appspot.com',
-    iosClientId: '523652369638-m64ff32h055cmhlln93h3dol6st3eqjc.apps.googleusercontent.com',
-    iosBundleId: 'com.example.app'
+    apiKey: 'AIzaSyCPPNoXXU7cETMVADlPtdnU4ts_0TWIzos',
+    appId: '1:727588511842:ios:4733307a57961614a9313b',
+    messagingSenderId: '727588511842',
+    projectId: 'cosc4995-ui-1',
+    storageBucket: 'cosc4995-ui-1.appspot.com',
+    iosBundleId: 'com.example.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDPCWi7Xorvg9G5TA2ha5SEHTZKMSHmCx8',
-    appId: '1:841985936375:web:455031f61436f9ded1fcf2',
-    messagingSenderId: '523652369638',
-    projectId: 'cosc-4995-ui-0',
-    storageBucket: 'cosc-4995-ui-0.appspot.com',
-    iosClientId: '523652369638-m64ff32h055cmhlln93h3dol6st3eqjc.apps.googleusercontent.com',
-    iosBundleId: 'com.example.app'
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyDPCWi7Xorvg9G5TA2ha5SEHTZKMSHmCx8',
-    appId: '1:841985936375:web:455031f61436f9ded1fcf2',
-    messagingSenderId: '523652369638',
-    projectId: 'cosc-4995-ui-0',
-    authDomain: 'cosc-4995-ui-0.firebaseapp.com',
-    storageBucket: 'cosc-4995-ui-0.appspot.com'
-  );
-
-  static const FirebaseOptions linux = FirebaseOptions(
-    apiKey: 'AIzaSyDPCWi7Xorvg9G5TA2ha5SEHTZKMSHmCx8',
-    appId: '1:841985936375:web:455031f61436f9ded1fcf2',
-    messagingSenderId: '523652369638',
-    projectId: 'cosc-4995-ui-0',
-    authDomain: 'cosc-4995-ui-0.firebaseapp.com',
-    storageBucket: 'cosc-4995-ui-0.appspot.com'
+    apiKey: 'AIzaSyCPPNoXXU7cETMVADlPtdnU4ts_0TWIzos',
+    appId: '1:727588511842:ios:4733307a57961614a9313b',
+    messagingSenderId: '727588511842',
+    projectId: 'cosc4995-ui-1',
+    storageBucket: 'cosc4995-ui-1.appspot.com',
+    iosBundleId: 'com.example.app',
   );
 }
