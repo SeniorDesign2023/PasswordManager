@@ -59,20 +59,31 @@ class _UserWidgetState extends State<UserWidget> {
     var cards = [];
     var data = await db.collection(emailaddress.toString()).get();
     for (var docSnapshot in data.docs) {
-      cards.add(Entry.fromFirestore(docSnapshot, null));
+      //print(docSnapshot.id);
+      var e=Entry(
+        id: docSnapshot.id,
+        name: docSnapshot.data()["name"],
+        pword: docSnapshot.data()["pword"]
+      );
+      cards.add(e);
     }
     return cards;
   }
 
   Future<void> addEntry(Map<String, dynamic> data) async {
     await FirebaseFirestore.instance
-        .collection(emailaddress.toString())
-        .add(data);
+      .collection(emailaddress.toString())
+      .add(data);
   }
-  Future<void> _updateEntry(BuildContext context, Map<String, dynamic> saveData, Map<String, dynamic> oldData) async {
-    /*await FirebaseFirestore.instance
-        .collection(emailaddress.toString())
-        .doc(oldData);*/
+  Future<void> _updateEntry(BuildContext context, Map<String, dynamic> saveData, Entry oldData) async {
+    FirebaseFirestore.instance
+      .collection(emailaddress.toString())
+      .doc(oldData.id).update(saveData);
+  }
+  Future<void> _deleteEntry(Entry e) async {
+    FirebaseFirestore.instance
+      .collection(emailaddress.toString())
+      .doc(e.id).delete();
   }
 
   static Future<ClipboardData?> getClipBoardData() async {
@@ -88,7 +99,7 @@ class _UserWidgetState extends State<UserWidget> {
 
   //Menu for confirming a deletion of an entry
   //Tyler O
-  Future<void> _deleteItem(BuildContext context, var currentEntry) {
+  Future<void> _deleteItem(BuildContext context, Entry currentEntry) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -107,6 +118,7 @@ class _UserWidgetState extends State<UserWidget> {
               child: const Text('Delete'),
               onPressed: () {
                 //Delete item
+                _deleteEntry(currentEntry);
                 Navigator.of(context).pop();
               },
             ),
@@ -131,7 +143,6 @@ class _UserWidgetState extends State<UserWidget> {
   //Menu for modifying or deleting and entry card
   //Tyler O
   Future<void> _modifyEntryMenu(BuildContext context, String seed, var currentEntry) {
-
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -329,15 +340,15 @@ class _UserWidgetState extends State<UserWidget> {
                     width: 300,
                     height: 750,
                     child: AlertDialog(
-                      title: Text('Enter a new password'),
-                      contentPadding: EdgeInsets.all(10),
+                      title: const Text('Enter a new password'),
+                      contentPadding: const EdgeInsets.all(10),
                       content: ListView(
                         shrinkWrap: true,
                         children: [
                           TextFormField(
                             controller: nameController,
                             decoration:
-                                InputDecoration(hintText: 'Account name'),
+                                const InputDecoration(hintText: 'Account name'),
                             onFieldSubmitted: (value) {
                               Map<String, dynamic> saveData = {
                                 'name': nameController.text,
@@ -353,7 +364,7 @@ class _UserWidgetState extends State<UserWidget> {
                           TextFormField(
                             controller: pwordController,
                             obscureText: true,
-                            decoration: InputDecoration(hintText: 'Password'),
+                            decoration: const InputDecoration(hintText: 'Password'),
                             onFieldSubmitted: (value) {
                               Map<String, dynamic> saveData = {
                                 'name': nameController.text,
@@ -371,7 +382,7 @@ class _UserWidgetState extends State<UserWidget> {
                       actions: [
                         ElevatedButton(
                             onPressed: () => Navigator.pop(context),
-                            child: Text('Cancel')),
+                            child: const Text('Cancel')),
                         ElevatedButton(
                             onPressed: () {
                               Map<String, dynamic> saveData = {
@@ -384,7 +395,7 @@ class _UserWidgetState extends State<UserWidget> {
                               addEntry(saveData);
                               cardlist = populateCards();
                             },
-                            child: Text('Submit'))
+                            child: const Text('Submit'))
                       ],
                     ),
                   ),
@@ -401,8 +412,9 @@ class _UserWidgetState extends State<UserWidget> {
 class Entry {
   final String? name;
   final String? pword;
+  final String? id;
 
-  Entry({this.name, this.pword});
+  Entry({this.name, this.pword, this.id});
 
   factory Entry.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
