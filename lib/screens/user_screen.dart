@@ -99,42 +99,48 @@ class _UserWidgetState extends State<UserWidget> {
 
   //Menu for confirming a deletion of an entry
   //Tyler O
-  Future<void> _deleteItem(BuildContext context, Entry currentEntry) {
-    return showDialog<void>(
+  void _deleteItem(BuildContext context, Entry currentEntry) {
+    showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Delete ${currentEntry.name}"),
-          content: Text(
-            "Are you sure you want to delete the following?\n"
-            "Username: ${currentEntry.name}\n"
-            "Password: ${currentEntry.pword}\n"
-          ),
-          actions: <Widget>[
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
+      builder: (_) {
+        return Center(
+          child: Container(
+            width: 300,
+            height: 750,
+            child: AlertDialog(
+              title: Text("Delete ${currentEntry.name}"),
+              content: Text(
+                "Are you sure you want to delete the following?\n"
+                "Username: ${currentEntry.name}\n"
+                "Password: ${currentEntry.pword}\n"
               ),
-              child: const Text('Delete'),
-              onPressed: () {
-                //Delete item
-                _deleteEntry(currentEntry);
-                Navigator.of(context).pop();
-              },
-            ),
-            const Text('\t'), 
-            //TextButton(onPressed: () {}, child: const Text('    ')),
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
-              child: const Text('Cancel'),
-              onPressed: () {
-                //update content
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+              actions: <Widget>[
+                TextButton(
+                  style: TextButton.styleFrom(
+                    textStyle: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  child: const Text('Delete'),
+                  onPressed: () {
+                    //Delete item
+                    _deleteEntry(currentEntry);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                const Text('\t'), 
+                //TextButton(onPressed: () {}, child: const Text('    ')),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    textStyle: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    //update content
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            )
+          )
         );
       },
     );
@@ -142,103 +148,109 @@ class _UserWidgetState extends State<UserWidget> {
 
   //Menu for modifying or deleting and entry card
   //Tyler O
-  Future<void> _modifyEntryMenu(BuildContext context, String seed, var currentEntry) {
-    return showDialog<void>(
+  void _modifyEntryMenu(BuildContext context, String seed, var currentEntry) {
+    showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Modify ${currentEntry.name}"),
-          //content entries
-          content: Form(
-            child: Padding(
-              padding: const EdgeInsets.all(50),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  //username to modify
-                  TextFormField(
-                    initialValue: currentEntry.name,
-                    controller: _unameController,
-                    decoration: InputDecoration(
-                      hintText: 'Username',
-                      border: OutlineInputBorder(
-                        borderSide:
-                          const BorderSide(color: Colors.blueGrey, width: 10),
-                          borderRadius: BorderRadius.circular(5)
+      builder: (_) {
+        return Center(
+          child: Container(
+            width: 300,
+            height: 750,
+            child: AlertDialog(
+              title: Text("Modify ${currentEntry.name}"),
+              //content entries
+              content: Form(
+                child: Padding(
+                  padding: const EdgeInsets.all(50),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      //username to modify
+                      TextFormField(
+                        initialValue: currentEntry.name,
+                        controller: _unameController,
+                        decoration: InputDecoration(
+                          hintText: 'Username',
+                          border: OutlineInputBorder(
+                            borderSide:
+                              const BorderSide(color: Colors.blueGrey, width: 10),
+                              borderRadius: BorderRadius.circular(5)
+                          )
+                        ),
+                        onFieldSubmitted: (value) {
+                          Map<String, dynamic> saveData = {
+                            'name': _unameController.text,
+                            'pword':
+                                salsaEncrypt(_pwordController.text, seed)
+                          };
+                          _updateEntry(context, saveData, currentEntry);
+                          _unameController.clear();
+                          _pwordController.clear();
+                        },
+                      ),
+                      //password to modify
+                      TextFormField(
+                        //initialValue: salsaDecrypt(currentEntry.pword, seed),
+                        initialValue: "test",
+                        controller: _pwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          hintText: 'Password',
+                          border: OutlineInputBorder(
+                            borderSide:
+                              const BorderSide(color: Colors.blueGrey, width: 10),
+                              borderRadius: BorderRadius.circular(5)
+                          )
+                        ),
+                        onFieldSubmitted: (value) {
+                          Map<String, dynamic> saveData = {
+                            'name': _unameController.text,
+                            'pword':
+                                salsaEncrypt(_pwordController.text, seed)
+                          };
+                          _updateEntry(context, saveData, currentEntry);
+                          _unameController.clear();
+                          _pwordController.clear();
+                        },
                       )
-                    ),
-                    onFieldSubmitted: (value) {
-                      Map<String, dynamic> saveData = {
-                        'name': _unameController.text,
-                        'pword':
-                            salsaEncrypt(_pwordController.text, seed)
-                      };
-                      _updateEntry(context, saveData, currentEntry);
-                      _unameController.clear();
-                      _pwordController.clear();
-                    },
-                  ),
-                  //password to modify
-                  TextFormField(
-                    //initialValue: salsaDecrypt(currentEntry.pword, seed),
-                    initialValue: "test",
-                    controller: _pwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      border: OutlineInputBorder(
-                        borderSide:
-                          const BorderSide(color: Colors.blueGrey, width: 10),
-                          borderRadius: BorderRadius.circular(5)
-                      )
-                    ),
-                    onFieldSubmitted: (value) {
-                      Map<String, dynamic> saveData = {
-                        'name': _unameController.text,
-                        'pword':
-                            salsaEncrypt(_pwordController.text, seed)
-                      };
-                      _updateEntry(context, saveData, currentEntry);
-                      _unameController.clear();
-                      _pwordController.clear();
-                    },
+                    ],
                   )
-                ],
-              )
+                )
+              ),
+              //buttons
+              actions: <Widget>[
+                TextButton(
+                  style: TextButton.styleFrom(
+                    textStyle: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  child: const Text('Delete'),
+                  onPressed: () {
+                    _deleteItem(context, currentEntry);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                const Text('\t'), 
+                TextButton(
+                  style: TextButton.styleFrom(
+                    textStyle: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  child: const Text('Done'),
+                  onPressed: () {
+                    //update content
+                    Map<String, dynamic> saveData = {
+                      'name': _unameController.text,
+                      'pword':
+                          salsaEncrypt(_pwordController.text, seed)
+                    };
+                    _updateEntry(context, saveData, currentEntry);
+                    _unameController.clear();
+                    _pwordController.clear();
+                  },
+                ),
+              ],
             )
-          ),
-          //buttons
-          actions: <Widget>[
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
-              child: const Text('Delete'),
-              onPressed: () {
-                _deleteItem(context, currentEntry);
-                Navigator.of(context).pop();
-              },
-            ),
-            const Text('\t'), 
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
-              child: const Text('Done'),
-              onPressed: () {
-                //update content
-                Map<String, dynamic> saveData = {
-                  'name': _unameController.text,
-                  'pword':
-                      salsaEncrypt(_pwordController.text, seed)
-                };
-                _updateEntry(context, saveData, currentEntry);
-                _unameController.clear();
-                _pwordController.clear();
-              },
-            ),
-          ],
+          )
         );
       },
     );
@@ -273,21 +285,33 @@ class _UserWidgetState extends State<UserWidget> {
                         Clipboard.setData(const ClipboardData(
                             text: "test")); /*salsaDecrypt(
                                 currentEntry.pword, seed)));*/
-                      },
+                      },/*
                       onLongPress: () {
                         //modifying entry data, put what was in clipboard back
                         Clipboard.setData(clipboardVal!);
                         //create menu for modifying the data in that card
                         _modifyEntryMenu(context, seed, currentEntry);
 
-                      },
+                      },*/
                       child: SizedBox(
                         width: 400,
                         height: 150,
-                        child: Column(
+                        child: /*Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [Text('${currentEntry.name}')],
-                        ),
+                          children: [
+                            Text('${currentEntry.name}')
+                          ],
+                        ),*/
+                        ListTile(
+                          title: Center(child: Text('${currentEntry.name}')),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.settings),
+                            tooltip: 'Modify',
+                            onPressed: () {
+                              _modifyEntryMenu(context, seed, currentEntry);
+                            },
+                          )
+                        )
                       )
                     )
                   );
@@ -331,76 +355,77 @@ class _UserWidgetState extends State<UserWidget> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
-              context: context,
-              builder: (_) {
-                var nameController = TextEditingController();
-                var pwordController = TextEditingController();
-                return Center(
-                  child: Container(
-                    width: 300,
-                    height: 750,
-                    child: AlertDialog(
-                      title: const Text('Enter a new password'),
-                      contentPadding: const EdgeInsets.all(10),
-                      content: ListView(
-                        shrinkWrap: true,
-                        children: [
-                          TextFormField(
-                            controller: nameController,
-                            decoration:
-                                const InputDecoration(hintText: 'Account name'),
-                            onFieldSubmitted: (value) {
-                              Map<String, dynamic> saveData = {
-                                'name': nameController.text,
-                                'pword':
-                                    salsaEncrypt(pwordController.text, seed)
-                              };
-                              nameController.clear();
-                              pwordController.clear();
-                              addEntry(saveData);
-                              cardlist = populateCards();
-                            },
-                          ),
-                          TextFormField(
-                            controller: pwordController,
-                            obscureText: true,
-                            decoration: const InputDecoration(hintText: 'Password'),
-                            onFieldSubmitted: (value) {
-                              Map<String, dynamic> saveData = {
-                                'name': nameController.text,
-                                'pword':
-                                    salsaEncrypt(pwordController.text, seed)
-                              };
-                              nameController.clear();
-                              pwordController.clear();
-                              addEntry(saveData);
-                              cardlist = populateCards();
-                            },
-                          ),
-                        ],
-                      ),
-                      actions: [
-                        ElevatedButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('Cancel')),
-                        ElevatedButton(
-                            onPressed: () {
-                              Map<String, dynamic> saveData = {
-                                'name': nameController.text,
-                                'pword':
-                                    salsaEncrypt(pwordController.text, seed)
-                              };
-                              nameController.clear();
-                              pwordController.clear();
-                              addEntry(saveData);
-                              cardlist = populateCards();
-                            },
-                            child: const Text('Submit'))
+            context: context,
+            builder: (_) {
+              var nameController = TextEditingController();
+              var pwordController = TextEditingController();
+              return Center(
+                child: Container(
+                  width: 300,
+                  height: 750,
+                  child: AlertDialog(
+                    title: const Text('Enter a new password'),
+                    contentPadding: const EdgeInsets.all(10),
+                    content: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        TextFormField(
+                          controller: nameController,
+                          decoration:
+                              const InputDecoration(hintText: 'Account name'),
+                          onFieldSubmitted: (value) {
+                            Map<String, dynamic> saveData = {
+                              'name': nameController.text,
+                              'pword':
+                                  salsaEncrypt(pwordController.text, seed)
+                            };
+                            nameController.clear();
+                            pwordController.clear();
+                            addEntry(saveData);
+                            cardlist = populateCards();
+                          },
+                        ),
+                        TextFormField(
+                          controller: pwordController,
+                          obscureText: true,
+                          decoration: const InputDecoration(hintText: 'Password'),
+                          onFieldSubmitted: (value) {
+                            Map<String, dynamic> saveData = {
+                              'name': nameController.text,
+                              'pword':
+                                  salsaEncrypt(pwordController.text, seed)
+                            };
+                            nameController.clear();
+                            pwordController.clear();
+                            addEntry(saveData);
+                            cardlist = populateCards();
+                          },
+                        ),
                       ],
                     ),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancel')),
+                      ElevatedButton(
+                          onPressed: () {
+                            Map<String, dynamic> saveData = {
+                              'name': nameController.text,
+                              'pword':
+                                  salsaEncrypt(pwordController.text, seed)
+                            };
+                            nameController.clear();
+                            pwordController.clear();
+                            addEntry(saveData);
+                            cardlist = populateCards();
+                          },
+                          child: const Text('Submit'))
+                    ],
                   ),
-                );
-              });
+                ),
+              );
+            }
+          );
         },
         backgroundColor: Colors.green,
         child: const Icon(Icons.add),
