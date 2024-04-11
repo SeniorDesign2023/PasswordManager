@@ -37,11 +37,13 @@ class _UserWidgetState extends State<UserWidget> {
   String? emailaddress = '';
   late FutureBuilder updatableList;
   bool refreshed=false;
-
+/*
   //used for the form asking to modify an entry
   final _unameController = TextEditingController();
   final _pwordController = TextEditingController();
+  */
 
+/*
   //used for modifying entries
   void _handleModifySubmit(uname, pword) async {
     print(uname + pword);
@@ -58,6 +60,7 @@ class _UserWidgetState extends State<UserWidget> {
       }
     }
   }
+  */
 
   Future<List> populateCards() async {
     var cards = [];
@@ -135,7 +138,7 @@ class _UserWidgetState extends State<UserWidget> {
                   style: TextButton.styleFrom(
                     textStyle: Theme.of(context).textTheme.labelLarge,
                   ),
-                  child: const Text('Delete'),
+                  child: const Text('Delete', style: TextStyle(color: Colors.red)),
                   onPressed: () {
                     //Delete item
                     _deleteEntry(currentEntry);
@@ -165,7 +168,7 @@ class _UserWidgetState extends State<UserWidget> {
 
   //Menu for modifying or deleting and entry card
   //Tyler O
-  String _modifyEntryMenu(BuildContext context, String seed, Entry currentEntry) {
+  void _modifyEntryMenu(BuildContext context, String seed, Entry currentEntry) {
     String pwd=currentEntry.pword!;
     showDialog(
       context: context,
@@ -223,7 +226,7 @@ class _UserWidgetState extends State<UserWidget> {
                     _deleteItem(context, seed, currentEntry);
                   },
                 ),
-                const SizedBox(width: 20), 
+                const SizedBox(width: 75), 
                 TextButton(
                   style: TextButton.styleFrom(
                     textStyle: Theme.of(context).textTheme.labelLarge,
@@ -242,7 +245,6 @@ class _UserWidgetState extends State<UserWidget> {
         );
       },
     );
-    return pwd; //already encrypted
   }
 
   FutureBuilder updateCardList() {
@@ -252,45 +254,40 @@ class _UserWidgetState extends State<UserWidget> {
         builder: (BuildContext bldrCntxt, snapshot) {
           List<Widget> children;
           if (snapshot.hasData) {
-            children = <Widget>[
-              ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: snapshot.data?.length,
-                itemBuilder: (itmBldrCntxt, index) {
-                  var currentEntry = snapshot.data?.elementAt(index);
-                  return Card(
-                    child: InkWell(
-                      splashColor: Colors.blue,
-                      onTap: () async {
-                        //print(salsaDecrypt(currentEntry.pword, seed));
-                        //TODO: ENCRYPT
-                        Clipboard.setData(ClipboardData(
-                            text: currentEntry.pword)); /*salsaDecrypt(
-                                currentEntry.pword, seed)));*/
-                      },
-                      child: SizedBox(
-                        width: 400,
-                        height: 150,
-                        child: ListTile(
-                          title: Center(child: Text('${currentEntry.name}')),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.settings),
-                            tooltip: 'Modify',
-                            onPressed: () {
-                              //pwd already encrypted
-                              String pwd=_modifyEntryMenu(context, seed, currentEntry);
-                              //if(pwd!=currentEntry.pword) {
-                              //}
-                            },
-                          )
+            return ListView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: snapshot.data?.length,
+              itemBuilder: (itmBldrCntxt, index) {
+                var currentEntry = snapshot.data?.elementAt(index);
+                return Card(
+                  child: InkWell(
+                    splashColor: Colors.blue,
+                    onTap: () async {
+                      //print(salsaDecrypt(currentEntry.pword, seed));
+                      //TODO: ENCRYPT
+                      Clipboard.setData(ClipboardData(
+                          text: currentEntry.pword)); /*salsaDecrypt(
+                              currentEntry.pword, seed)));*/
+                    },
+                    child: SizedBox(
+                      width: 200,
+                      height: 75,
+                      child: ListTile(
+                        title: Center(child: Text('${currentEntry.name}')),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.settings),
+                          tooltip: 'Modify',
+                          onPressed: () {
+                            _modifyEntryMenu(context, seed, currentEntry);
+                          },
                         )
                       )
                     )
-                  );
-                }
-              )
-            ];
+                  )
+                );
+              }
+            );
           }
           else if (snapshot.hasError) {
             children = <Widget>[
