@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -33,6 +35,8 @@ class _UserWidgetState extends State<UserWidget> {
   final db = FirebaseFirestore.instance;
   String seed = '';
   String? emailaddress = '';
+  late FutureBuilder updatableList;
+  bool refreshed=false;
 
   //used for the form asking to modify an entry
   final _unameController = TextEditingController();
@@ -75,11 +79,20 @@ class _UserWidgetState extends State<UserWidget> {
       .collection(emailaddress.toString())
       .add(data);
   }
-  Future<void> _updateEntry(BuildContext context, Map<String, dynamic> saveData, Entry oldData) async {
+
+  Future<void> _updateEntry(BuildContext context, String pwd, Entry oldData) async {
+    Map<String, dynamic> saveData = {
+      'name': oldData.name,
+      'pword': pwd
+    };
     FirebaseFirestore.instance
       .collection(emailaddress.toString())
       .doc(oldData.id).update(saveData);
+    setState(() {
+      refreshed=false;
+    });
   }
+
   Future<void> _deleteEntry(Entry e) async {
     FirebaseFirestore.instance
       .collection(emailaddress.toString())
@@ -135,6 +148,9 @@ class _UserWidgetState extends State<UserWidget> {
                   child: const Text('Cancel'),
                   onPressed: () {
                     //update content
+                    setState(() {
+                      refreshed=false;
+                    });
                     Navigator.of(context).pop();
                   },
                 ),
@@ -148,17 +164,21 @@ class _UserWidgetState extends State<UserWidget> {
 
   //Menu for modifying or deleting and entry card
   //Tyler O
-  void _modifyEntryMenu(BuildContext context, String seed, var currentEntry) {
+  String _modifyEntryMenu(BuildContext context, String seed, Entry currentEntry) {
+    String pwd=currentEntry.pword!;
     showDialog(
       context: context,
       builder: (_) {
+        var pwdCtrlr=TextEditingController();
+        pwdCtrlr.text=currentEntry.pword!;
+        //TODO: ENCRYPT
+        //pwdCtrlr.text=salsaDecrypt(currentEntry.pword!, seed);//currentEntry.pword!;
         return Center(
           child: Container(
-            width: 300,
-            height: 750,
+            width: 850,
+            height: 400,
             child: AlertDialog(
               title: Text("Modify ${currentEntry.name}"),
-              //content entries
               content: Form(
                 child: Padding(
                   padding: const EdgeInsets.all(50),
@@ -166,35 +186,10 @@ class _UserWidgetState extends State<UserWidget> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      //username to modify
-                      TextFormField(
-                        initialValue: currentEntry.name,
-                        controller: _unameController,
-                        decoration: InputDecoration(
-                          hintText: 'Username',
-                          border: OutlineInputBorder(
-                            borderSide:
-                              const BorderSide(color: Colors.blueGrey, width: 10),
-                              borderRadius: BorderRadius.circular(5)
-                          )
-                        ),
-                        onFieldSubmitted: (value) {
-                          Map<String, dynamic> saveData = {
-                            'name': _unameController.text,
-                            'pword':
-                                salsaEncrypt(_pwordController.text, seed)
-                          };
-                          _updateEntry(context, saveData, currentEntry);
-                          _unameController.clear();
-                          _pwordController.clear();
-                        },
-                      ),
                       //password to modify
                       TextFormField(
-                        //initialValue: salsaDecrypt(currentEntry.pword, seed),
-                        initialValue: "test",
-                        controller: _pwordController,
-                        obscureText: true,
+                        controller: pwdCtrlr,
+                        //obscureText: true,
                         decoration: InputDecoration(
                           hintText: 'Password',
                           border: OutlineInputBorder(
@@ -204,14 +199,10 @@ class _UserWidgetState extends State<UserWidget> {
                           )
                         ),
                         onFieldSubmitted: (value) {
-                          Map<String, dynamic> saveData = {
-                            'name': _unameController.text,
-                            'pword':
-                                salsaEncrypt(_pwordController.text, seed)
-                          };
-                          _updateEntry(context, saveData, currentEntry);
-                          _unameController.clear();
-                          _pwordController.clear();
+                          pwd=pwdCtrlr.text; //TODO: ENCRYPT
+                          _updateEntry(context, pwd, currentEntry);
+                          pwdCtrlr.clear();
+                          Navigator.of(context).pop();
                         },
                       )
                     ],
@@ -223,14 +214,15 @@ class _UserWidgetState extends State<UserWidget> {
                 TextButton(
                   style: TextButton.styleFrom(
                     textStyle: Theme.of(context).textTheme.labelLarge,
+                    alignment: Alignment.centerLeft
                   ),
-                  child: const Text('Delete'),
+                  child: const Text('Delete', style: TextStyle(color: Colors.red)),
                   onPressed: () {
-                    _deleteItem(context, currentEntry);
+                    //_deleteItem(context, currentEntry);
                     Navigator.of(context).pop();
                   },
                 ),
-                const Text('\t'), 
+                const SizedBox(width: 20), 
                 TextButton(
                   style: TextButton.styleFrom(
                     textStyle: Theme.of(context).textTheme.labelLarge,
@@ -238,14 +230,9 @@ class _UserWidgetState extends State<UserWidget> {
                   child: const Text('Done'),
                   onPressed: () {
                     //update content
-                    Map<String, dynamic> saveData = {
-                      'name': _unameController.text,
-                      'pword':
-                          salsaEncrypt(_pwordController.text, seed)
-                    };
-                    _updateEntry(context, saveData, currentEntry);
-                    _unameController.clear();
-                    _pwordController.clear();
+                    _updateEntry(context, pwdCtrlr.text, currentEntry);
+                    pwdCtrlr.clear();
+                    Navigator.of(context).pop();
                   },
                 ),
               ],
@@ -254,17 +241,14 @@ class _UserWidgetState extends State<UserWidget> {
         );
       },
     );
+    return pwd; //already encrypted
   }
 
-  @override
-  Widget build(BuildContext context) {
-    seed = widget.function();
-    emailaddress = user?.email;
-    var cardlist = populateCards();
-    return Scaffold(
-      body: FutureBuilder(
-        future: cardlist,
-        builder: (BuildContext context, snapshot) {
+  FutureBuilder updateCardList() {
+    setState(() {
+      updatableList=FutureBuilder(
+        future: populateCards(),
+        builder: (BuildContext bldrCntxt, snapshot) {
           List<Widget> children;
           if (snapshot.hasData) {
             children = <Widget>[
@@ -272,43 +256,31 @@ class _UserWidgetState extends State<UserWidget> {
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 itemCount: snapshot.data?.length,
-                itemBuilder: (context, index) {
+                itemBuilder: (itmBldrCntxt, index) {
                   var currentEntry = snapshot.data?.elementAt(index);
-                  ClipboardData? clipboardVal;
                   return Card(
                     child: InkWell(
                       splashColor: Colors.blue,
                       onTap: () async {
-                        //grab previous clipboard value for long pressed use
-                        clipboardVal=await getClipBoardData();
                         //print(salsaDecrypt(currentEntry.pword, seed));
-                        Clipboard.setData(const ClipboardData(
-                            text: "test")); /*salsaDecrypt(
+                        //TODO: ENCRYPT
+                        Clipboard.setData(ClipboardData(
+                            text: currentEntry.pword)); /*salsaDecrypt(
                                 currentEntry.pword, seed)));*/
-                      },/*
-                      onLongPress: () {
-                        //modifying entry data, put what was in clipboard back
-                        Clipboard.setData(clipboardVal!);
-                        //create menu for modifying the data in that card
-                        _modifyEntryMenu(context, seed, currentEntry);
-
-                      },*/
+                      },
                       child: SizedBox(
                         width: 400,
                         height: 150,
-                        child: /*Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('${currentEntry.name}')
-                          ],
-                        ),*/
-                        ListTile(
+                        child: ListTile(
                           title: Center(child: Text('${currentEntry.name}')),
                           trailing: IconButton(
                             icon: const Icon(Icons.settings),
                             tooltip: 'Modify',
                             onPressed: () {
-                              _modifyEntryMenu(context, seed, currentEntry);
+                              //pwd already encrypted
+                              String pwd=_modifyEntryMenu(context, seed, currentEntry);
+                              //if(pwd!=currentEntry.pword) {
+                              //}
                             },
                           )
                         )
@@ -351,7 +323,18 @@ class _UserWidgetState extends State<UserWidget> {
             ),
           );
         }
-      ),
+      );
+      refreshed=true;
+    });
+    return updatableList;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    seed = widget.function();
+    emailaddress = user?.email;
+    return Scaffold(
+      body: (refreshed)?updatableList:updateCardList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
@@ -376,13 +359,16 @@ class _UserWidgetState extends State<UserWidget> {
                           onFieldSubmitted: (value) {
                             Map<String, dynamic> saveData = {
                               'name': nameController.text,
-                              'pword':
-                                  salsaEncrypt(pwordController.text, seed)
+                              'pword': pwordController.text
+                                  //TODO: ENCRYPT
+                                  //salsaEncrypt(pwordController.text, seed)
                             };
                             nameController.clear();
                             pwordController.clear();
                             addEntry(saveData);
-                            cardlist = populateCards();
+                            setState(() {
+                              updatableList=updateCardList();
+                            });
                           },
                         ),
                         TextFormField(
@@ -392,13 +378,16 @@ class _UserWidgetState extends State<UserWidget> {
                           onFieldSubmitted: (value) {
                             Map<String, dynamic> saveData = {
                               'name': nameController.text,
-                              'pword':
-                                  salsaEncrypt(pwordController.text, seed)
+                              'pword': pwordController.text
+                                  //TODO: ENCRYPT
+                                  //salsaEncrypt(pwordController.text, seed)
                             };
                             nameController.clear();
                             pwordController.clear();
                             addEntry(saveData);
-                            cardlist = populateCards();
+                            setState(() {
+                              updatableList=updateCardList();
+                            });
                           },
                         ),
                       ],
@@ -411,13 +400,16 @@ class _UserWidgetState extends State<UserWidget> {
                           onPressed: () {
                             Map<String, dynamic> saveData = {
                               'name': nameController.text,
-                              'pword':
-                                  salsaEncrypt(pwordController.text, seed)
+                              'pword': pwordController.text
+                                  //TODO: ENCRYPT
+                                  //salsaEncrypt(pwordController.text, seed)
                             };
                             nameController.clear();
                             pwordController.clear();
                             addEntry(saveData);
-                            cardlist = populateCards();
+                            setState(() {
+                              updatableList=updateCardList();
+                            });
                           },
                           child: const Text('Submit'))
                     ],
