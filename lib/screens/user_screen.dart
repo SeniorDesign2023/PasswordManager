@@ -97,6 +97,9 @@ class _UserWidgetState extends State<UserWidget> {
     FirebaseFirestore.instance
       .collection(emailaddress.toString())
       .doc(e.id).delete();
+    setState(() {
+      refreshed=false;
+    });
   }
 
   static Future<ClipboardData?> getClipBoardData() async {
@@ -112,7 +115,7 @@ class _UserWidgetState extends State<UserWidget> {
 
   //Menu for confirming a deletion of an entry
   //Tyler O
-  void _deleteItem(BuildContext context, Entry currentEntry) {
+  void _deleteItem(BuildContext context, String seed, Entry currentEntry) {
     showDialog(
       context: context,
       builder: (_) {
@@ -148,10 +151,8 @@ class _UserWidgetState extends State<UserWidget> {
                   child: const Text('Cancel'),
                   onPressed: () {
                     //update content
-                    setState(() {
-                      refreshed=false;
-                    });
                     Navigator.of(context).pop();
+                    _modifyEntryMenu(context, seed, currentEntry);
                   },
                 ),
               ],
@@ -218,8 +219,8 @@ class _UserWidgetState extends State<UserWidget> {
                   ),
                   child: const Text('Delete', style: TextStyle(color: Colors.red)),
                   onPressed: () {
-                    //_deleteItem(context, currentEntry);
                     Navigator.of(context).pop();
+                    _deleteItem(context, seed, currentEntry);
                   },
                 ),
                 const SizedBox(width: 20), 
