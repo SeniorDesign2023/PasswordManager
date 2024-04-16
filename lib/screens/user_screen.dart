@@ -167,6 +167,10 @@ class _UserWidgetState extends State<UserWidget> {
                           )
                         ),
                         onFieldSubmitted: (value) {
+                          if(pwdCtrlr.text=='') {
+                            UILibrary.showError(context, 'Empty Password!', "Please enter a password");
+                            return;
+                          }
                           pwd=pwdCtrlr.text; //TODO: ENCRYPT
                           _updateEntry(context, pwd, currentEntry);
                           pwdCtrlr.clear();
@@ -197,6 +201,10 @@ class _UserWidgetState extends State<UserWidget> {
                   ),
                   child: const Text('Done'),
                   onPressed: () {
+                    if(pwdCtrlr.text=='') {
+                      UILibrary.showError(context, 'Empty Password!', "Please enter a password to save");
+                      return;
+                    }
                     //update content
                     _updateEntry(context, pwdCtrlr.text, currentEntry);
                     pwdCtrlr.clear();
@@ -328,6 +336,14 @@ class _UserWidgetState extends State<UserWidget> {
                           controller: nameController,
                           decoration: const InputDecoration(hintText: 'Account name'),
                           onFieldSubmitted: (value) {
+                            if(nameController.text=='') {
+                              UILibrary.showError(context, 'Empty username!', "Please enter a username to save");
+                              return;
+                            }
+                            else if(pwordController.text=='') {
+                              UILibrary.showError(context, 'Empty Password!', "Please enter a password to save");
+                              return;
+                            }
                             Map<String, dynamic> saveData = {
                               'name': nameController.text,
                               'pword': pwordController.text
@@ -347,6 +363,14 @@ class _UserWidgetState extends State<UserWidget> {
                           obscureText: true,
                           decoration: const InputDecoration(hintText: 'Password'),
                           onFieldSubmitted: (value) {
+                            if(nameController.text=='') {
+                              UILibrary.showError(context, 'Empty username!', "Please enter a username to save");
+                              return;
+                            }
+                            else if(pwordController.text=='') {
+                              UILibrary.showError(context, 'Empty Password!', "Please enter a password to save");
+                              return;
+                            }
                             Map<String, dynamic> saveData = {
                               'name': nameController.text,
                               'pword': pwordController.text
@@ -365,24 +389,33 @@ class _UserWidgetState extends State<UserWidget> {
                     ),
                     actions: [
                       ElevatedButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancel')),
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel')),
                       ElevatedButton(
-                          onPressed: () {
-                            Map<String, dynamic> saveData = {
-                              'name': nameController.text,
-                              'pword': pwordController.text
-                                  //TODO: ENCRYPT
-                                  //salsaEncrypt(pwordController.text, seed)
-                            };
-                            nameController.clear();
-                            pwordController.clear();
-                            addEntry(saveData);
-                            setState(() {
-                              updatableList=updateCardList();
-                            });
-                          },
-                          child: const Text('Submit'))
+                        onPressed: () {
+                          if(nameController.text=='') {
+                            UILibrary.showError(context, 'Empty username!', "Please enter a username to save");
+                            return;
+                          }
+                          else if(pwordController.text=='') {
+                            UILibrary.showError(context, 'Empty Password!', "Please enter a password to save");
+                            return;
+                          }
+                          Map<String, dynamic> saveData = {
+                            'name': nameController.text,
+                            'pword': pwordController.text
+                                //TODO: ENCRYPT
+                                //salsaEncrypt(pwordController.text, seed)
+                          };
+                          nameController.clear();
+                          pwordController.clear();
+                          addEntry(saveData);
+                          setState(() {
+                            updatableList=updateCardList();
+                          });
+                        },
+                        child: const Text('Submit')
+                      )
                     ],
                   ),
                 ),
