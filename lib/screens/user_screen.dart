@@ -157,7 +157,7 @@ class _UserWidgetState extends State<UserWidget> {
                       //password to modify
                       TextFormField(
                         controller: pwdCtrlr,
-                        //obscureText: true,
+                        obscureText: true,
                         decoration: InputDecoration(
                           hintText: 'Password',
                           border: OutlineInputBorder(
@@ -231,7 +231,7 @@ class _UserWidgetState extends State<UserWidget> {
                       //print(salsaDecrypt(currentEntry.pword, seed));
                       //TODO: ENCRYPT
                       Clipboard.setData(ClipboardData(
-                          text: currentEntry.pword)); /*salsaDecrypt(
+                        text: currentEntry.pword)); /*salsaDecrypt(
                               currentEntry.pword, seed)));*/
                     },
                     child: SizedBox(
