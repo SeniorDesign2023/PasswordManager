@@ -67,7 +67,7 @@ class _LoginFormState extends State<LoginForm> {
         UILibrary.showError(context, "Not found!", "That username was not found");
       }
       else {
-        UILibrary.showError(context, "Error", "An unknown error occurred!");
+        UILibrary.showError(context, "Error", "An unknown error occurred:\n$e");
       }
     }
   }

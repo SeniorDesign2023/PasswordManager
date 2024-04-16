@@ -77,7 +77,7 @@ class UILibrary {
     '/login': (context) => LoginScreen(function: setseed),
     '/signup': (context) => SignUpScreen(function: setseed),
     '/user': (context) => UserScreen(function: getseed),
-    '/user/settings': (context) => UserSettingsScreen(),
+    '/user/settings': (context) => const UserSettingsScreen(),
   };
 
   //routing back to the main user page
@@ -169,6 +169,26 @@ class UILibrary {
         icon: const Icon(Icons.arrow_back),
       )*/
     );
+  }
+  
+  //used for checking passwords are the same
+  //Tyler O
+  static bool pwdValidation(pword, pword2, context) {
+    if((pword=="")||(pword2=="")) {
+      UILibrary.showError(context, "Missing", "Please fill the sign up for completely");
+      return false;
+    }
+    else if((pword.length<6)||(pword2.length<6)) {
+      UILibrary.showError(context, "Password length", "Please make sure you have atleast 6 characters in your password");
+      return false;
+    }
+    else if(pword==pword2) {
+      return true;
+    }
+    else {
+      UILibrary.showError(context, "Password match", "Please make sure passwords match");
+      return false;
+    }
   }
 }
 

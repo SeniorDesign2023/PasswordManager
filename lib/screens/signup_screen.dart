@@ -48,19 +48,10 @@ class SignUpFormState extends State<SignUpForm> {
     Navigator.pushNamed(context, '/user');
   }
 
-  bool _passwordValidation(pword, pword2) {
-    if (pword == pword2) {
-      return true;
-    } else {
-      UILibrary.showError(context, "Password match", "Please make sure passwords match");
-      return false;
-    }
-  }
-
   //Matt
   //Modified by Tyler (for UI)
   void _handleSubmit(uname, pword, pword2) async {
-    if (_passwordValidation(pword, pword2)) {
+    if (UILibrary.pwdValidation(pword, pword2, context)) {
       try {
         final credential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: uname, password: pword);
@@ -78,7 +69,7 @@ class SignUpFormState extends State<SignUpForm> {
         }
         else {
         //print('Something went wrong');
-          UILibrary.showError(context, "Error", "An unkown error occurred");
+          UILibrary.showError(context, "Error", "An unkown error occurred:\n$e");
         }
       }
     }
