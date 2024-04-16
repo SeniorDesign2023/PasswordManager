@@ -14,10 +14,12 @@ class UserScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UILibrary.secureArea(context);
     return Scaffold(
-        body: UserWidget(
-      function: function,
-    ));
+      body: UserWidget(
+        function: function,
+      )
+    );
   }
 }
 
@@ -37,36 +39,11 @@ class _UserWidgetState extends State<UserWidget> {
   String? emailaddress = '';
   late FutureBuilder updatableList;
   bool refreshed=false;
-/*
-  //used for the form asking to modify an entry
-  final _unameController = TextEditingController();
-  final _pwordController = TextEditingController();
-  */
-
-/*
-  //used for modifying entries
-  void _handleModifySubmit(uname, pword) async {
-    print(uname + pword);
-    try {
-      final credential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: uname, password: pword);
-      widget.function(pword);
-      UILibrary.reRoute(context);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
-    }
-  }
-  */
 
   Future<List> populateCards() async {
     var cards = [];
     var data = await db.collection(emailaddress.toString()).get();
     for (var docSnapshot in data.docs) {
-      //print(docSnapshot.id);
       var e=Entry(
         id: docSnapshot.id,
         name: docSnapshot.data()["name"],
@@ -105,17 +82,6 @@ class _UserWidgetState extends State<UserWidget> {
     });
   }
 
-  static Future<ClipboardData?> getClipBoardData() async {
-    final Map<String, dynamic>? result=await SystemChannels.platform.invokeMethod(
-      'Clipboard.getData',
-      Clipboard.kTextPlain,
-    );
-    if(result==null) {
-      return null;
-    }
-    return ClipboardData(text: result['text'] as String);
-  }
-
   //Menu for confirming a deletion of an entry
   //Tyler O
   void _deleteItem(BuildContext context, String seed, Entry currentEntry) {
@@ -124,14 +90,13 @@ class _UserWidgetState extends State<UserWidget> {
       builder: (_) {
         return Center(
           child: Container(
-            width: 300,
+            width: 500,
             height: 750,
             child: AlertDialog(
-              title: Text("Delete ${currentEntry.name}"),
+              title: const Text("Delete a Password?"),
               content: Text(
                 "Are you sure you want to delete the following?\n"
                 "Username: ${currentEntry.name}\n"
-                "Password: ${currentEntry.pword}\n"
               ),
               actions: <Widget>[
                 TextButton(
@@ -145,8 +110,7 @@ class _UserWidgetState extends State<UserWidget> {
                     Navigator.of(context).pop();
                   },
                 ),
-                const Text('\t'), 
-                //TextButton(onPressed: () {}, child: const Text('    ')),
+                const SizedBox(width: 10), 
                 TextButton(
                   style: TextButton.styleFrom(
                     textStyle: Theme.of(context).textTheme.labelLarge,
@@ -332,7 +296,17 @@ class _UserWidgetState extends State<UserWidget> {
     seed = widget.function();
     emailaddress = user?.email;
     return Scaffold(
-      body: (refreshed)?updatableList:updateCardList(),
+      appBar: AppBar(
+        title: const Text("Password Manager"),
+        backgroundColor: ColourTheme.appBarBackground,
+      ),
+      drawer: UILibrary.drawer(context),
+      body: Center(
+        child: SizedBox(
+          width: 1000,
+          child: (refreshed)?updatableList:updateCardList()
+        )
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
@@ -352,8 +326,7 @@ class _UserWidgetState extends State<UserWidget> {
                       children: [
                         TextFormField(
                           controller: nameController,
-                          decoration:
-                              const InputDecoration(hintText: 'Account name'),
+                          decoration: const InputDecoration(hintText: 'Account name'),
                           onFieldSubmitted: (value) {
                             Map<String, dynamic> saveData = {
                               'name': nameController.text,
