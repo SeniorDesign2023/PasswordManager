@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app/UILibrary.dart';
 //import 'package:app/screens/user_screen.dart';
+import 'dart:developer';
 
 class UserSettingsScreen extends StatefulWidget {
   const UserSettingsScreen({super.key});
@@ -19,13 +20,14 @@ class Settings extends State<UserSettingsScreen> {
   //used to change user email
   //Tyler O
   void changeCollectionName(String user, String newUser) async {
-    var data = await db.collection(user.toString()).get();
+    log("$user\t$newUser");
+    var data=await db.collection(user).get();
     for (var docSnapshot in data.docs) {
       Map<String, dynamic> e={
         'name': docSnapshot.data()["name"],
         'pword': docSnapshot.data()["pword"]
       };
-      db.collection(newUser.toString()).add(e);
+      db.collection(newUser).add(e);
     }
     deleteCollection(user);
     return;
@@ -34,11 +36,30 @@ class Settings extends State<UserSettingsScreen> {
   //used to delete the current user account and used by: user_settings_screen:Settings.changeCollectionName(String, String)
   //Tyler O
   void deleteCollection(String user) async {
-    var data = await db.collection(user.toString()).get();
+    var data=await db.collection(user).get();
     for (var docSnapshot in data.docs) {
       FirebaseFirestore.instance
-        .collection(user.toString())
+        .collection(user)
         .doc(docSnapshot.id).delete();
+    }
+    return;
+  }
+
+  void deleteUser() async {
+    String user=FirebaseAuth.instance.currentUser!.email.toString();
+    var data=await db.collection(user).get();
+    for (var docSnapshot in data.docs) {
+      await FirebaseFirestore.instance
+        .collection(user)
+        .doc(docSnapshot.id).delete();
+    }
+    await FirebaseAuth.instance.currentUser!.delete();
+    //firebase oauth logout
+    try {
+      FirebaseAuth.instance.signOut();
+      FirebaseAuth.instance.signOut();
+    } catch(e) {
+      //if fails no worries, already dandy then
     }
     return;
   }
@@ -53,27 +74,25 @@ class Settings extends State<UserSettingsScreen> {
       ),
       drawer: UILibrary.drawer(context),
       body: Center(
-        child: SizedBox(
-          width: 1000,
-          child: Expanded(
+        //child: Expanded(
+          child: SizedBox(
+            width: 1000,
             child: ListView(
               children: <Widget>[
-                //colour theme
-                SizedBox(
-                  width: 1000,
-                  child: InkWell(
-                    child: Row(
-                      children: <Widget>[
-                        const Text("Dark theme"),
-                        Switch(
-                          value: ColourTheme.dark,
-                          onChanged: (bool val) {
-                            ColourTheme.changeTheme();
-                          }
-                        )
-                      ]
-                    )
-                  ),
+                //light/dark theme
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    children: <Widget>[
+                      const Text("Dark theme"),
+                      Switch(
+                        value: ColourTheme.dark,
+                        onChanged: (bool val) {
+                          ColourTheme.changeTheme();
+                        }
+                      )
+                    ]
+                  )
                 ),
                 const SizedBox(height: 25),
                 const Divider(),
@@ -97,23 +116,23 @@ class Settings extends State<UserSettingsScreen> {
                                 controller: emailCtrlr,
                                 decoration: const InputDecoration(hintText: 'Account name'),
                                 onFieldSubmitted: (value) {
-                                  String oldname=FirebaseAuth.instance.currentUser!.email!;
+                                  String oldname=FirebaseAuth.instance.currentUser!.email!.toString();
                                   if(emailCtrlr.text=='') {
                                     UILibrary.showError(context, 'Empty username!', "Please enter a username to save");
                                     return;
                                   }
-                                  else if(!RegExp("[A-Za-z0-9_.]+@[A-Za-z0-9._]+\.[a-zA-Z0-9]+").hasMatch(emailCtrlr.text)) {
+                                  else if(!RegExp("[A-Za-z0-9_.]+@[A-Za-z0-9._]+\\.[a-zA-Z0-9]+").hasMatch(emailCtrlr.text)) {
                                     UILibrary.showError(context, "User", "Please make sure to enter a real email");
                                     return;
                                   }
                                   try {
-                                    FirebaseAuth.instance.currentUser!.updateEmail(emailCtrlr.text);
-                                    changeCollectionName(oldname, emailCtrlr.text);
+                                    FirebaseAuth.instance.currentUser!.updateEmail(emailCtrlr.text.toString());
+                                    changeCollectionName(oldname, emailCtrlr.text.toString());
                                   } catch(e) {
                                     UILibrary.showError(context, "Error", "Unknown error occurred:\n$e");
                                   }
                                   emailCtrlr.clear();
-                                  
+                                  Navigator.of(context).pop();
                                 },
                               ),
                               actions: [
@@ -162,84 +181,91 @@ class Settings extends State<UserSettingsScreen> {
                         return Center(
                           child: SizedBox(
                             width: 500,
-                            child: Form(
-                              key: _pwdChngKey,
-                              child: Padding(
-                                padding: const EdgeInsets.all(50),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    TextFormField(
-                                      controller: pwd1Ctrlr,
-                                      obscureText: true,
-                                      decoration: InputDecoration(
-                                          hintText: 'Password',
-                                          border: OutlineInputBorder(
-                                          borderSide: const BorderSide(color: Colors.blueGrey, width: 10),
-                                          borderRadius: BorderRadius.circular(5)
-                                        )
+                            height: 500,
+                            child: AlertDialog(
+                              title: const Text("Change Password"),
+                              content: Form(
+                                key: _pwdChngKey,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(50),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      TextFormField(
+                                        controller: pwd1Ctrlr,
+                                        obscureText: true,
+                                        decoration: InputDecoration(
+                                            hintText: 'Password',
+                                            border: OutlineInputBorder(
+                                            borderSide: const BorderSide(color: Colors.blueGrey, width: 10),
+                                            borderRadius: BorderRadius.circular(5)
+                                          )
+                                        ),
+                                        onFieldSubmitted: (value) async {
+                                          if (UILibrary.pwdValidation(pwd1Ctrlr.text, pwd2Ctrlr.text, context)) {
+                                            try {
+                                              final credential = await FirebaseAuth.instance.currentUser!.updatePassword(pwd1Ctrlr.text);
+                                              //TODO: check if rest of passwords in collection need to be updated for seed change
+                                              UILibrary.setseed(pwd1Ctrlr.text);
+                                            } on FirebaseAuthException catch (e) {
+                                              //print('Something went wrong');
+                                              UILibrary.showError(context, "Error", "An unkown error occurred:\n$e");
+                                            }
+                                            pwd1Ctrlr.clear();
+                                            pwd2Ctrlr.clear();
+                                            Navigator.of(context).pop();
+                                          }
+                                        }
                                       ),
-                                      onFieldSubmitted: (value) async {
-                                        if (UILibrary.pwdValidation(pwd1Ctrlr.text, pwd2Ctrlr.text, context)) {
-                                          try {
-                                            final credential = await FirebaseAuth.instance.currentUser!.updatePassword(pwd1Ctrlr.text);
-                                            //TODO: check if rest of passwords in collection need to be updated for seed change
-                                            UILibrary.setseed(pwd1Ctrlr.text);
-                                          } on FirebaseAuthException catch (e) {
-                                            //print('Something went wrong');
-                                            UILibrary.showError(context, "Error", "An unkown error occurred:\n$e");
+                                      const SizedBox(height: 15),
+                                      TextFormField(
+                                        controller: pwd2Ctrlr,
+                                        obscureText: true,
+                                        decoration: InputDecoration(
+                                            hintText: 'Re-type password',
+                                            border: OutlineInputBorder(
+                                            borderSide: const BorderSide(color: Colors.blueGrey, width: 10),
+                                            borderRadius: BorderRadius.circular(5)
+                                          )
+                                        ),
+                                        onFieldSubmitted: (value) async {
+                                          if (UILibrary.pwdValidation(pwd1Ctrlr.text, pwd2Ctrlr.text, context)) {
+                                            try {
+                                              final credential = await FirebaseAuth.instance.currentUser!.updatePassword(pwd1Ctrlr.text);
+                                              //TODO: check if rest of passwords in collection need to be updated for seed change
+                                              UILibrary.setseed(pwd1Ctrlr.text);
+                                            } on FirebaseAuthException catch (e) {
+                                              //print('Something went wrong');
+                                              UILibrary.showError(context, "Error", "An unkown error occurred:\n$e");
+                                            }
+                                            pwd1Ctrlr.clear();
+                                            pwd2Ctrlr.clear();
+                                            Navigator.of(context).pop();
                                           }
-                                          pwd1Ctrlr.clear();
-                                          pwd2Ctrlr.clear();
                                         }
-                                      }
-                                    ),
-                                    TextFormField(
-                                      controller: pwd1Ctrlr,
-                                      obscureText: true,
-                                      decoration: InputDecoration(
-                                          hintText: 'Re-type password',
-                                          border: OutlineInputBorder(
-                                          borderSide: const BorderSide(color: Colors.blueGrey, width: 10),
-                                          borderRadius: BorderRadius.circular(5)
-                                        )
                                       ),
-                                      onFieldSubmitted: (value) async {
-                                        if (UILibrary.pwdValidation(pwd1Ctrlr.text, pwd2Ctrlr.text, context)) {
-                                          try {
-                                            final credential = await FirebaseAuth.instance.currentUser!.updatePassword(pwd1Ctrlr.text);
-                                            //TODO: check if rest of passwords in collection need to be updated for seed change
-                                            UILibrary.setseed(pwd1Ctrlr.text);
-                                          } on FirebaseAuthException catch (e) {
-                                            //print('Something went wrong');
-                                            UILibrary.showError(context, "Error", "An unkown error occurred:\n$e");
+                                      const SizedBox(height: 25),
+                                      TextButton(
+                                        onPressed: () async {
+                                          if (UILibrary.pwdValidation(pwd1Ctrlr.text, pwd2Ctrlr.text, context)) {
+                                            try {
+                                              final credential = await FirebaseAuth.instance.currentUser!.updatePassword(pwd1Ctrlr.text);
+                                              //TODO: check if rest of passwords in collection need to be updated for seed change
+                                              UILibrary.setseed(pwd1Ctrlr.text);
+                                            } on FirebaseAuthException catch (e) {
+                                              //print('Something went wrong');
+                                              UILibrary.showError(context, "Error", "An unkown error occurred:\n$e");
+                                            }
+                                            pwd1Ctrlr.clear();
+                                            pwd2Ctrlr.clear();
                                           }
-                                          pwd1Ctrlr.clear();
-                                          pwd2Ctrlr.clear();
-                                        }
-                                      }
-                                    ),
-                                    const SizedBox(height: 25), 
-                                    TextButton(
-                                      onPressed: () async {
-                                        if (UILibrary.pwdValidation(pwd1Ctrlr.text, pwd2Ctrlr.text, context)) {
-                                          try {
-                                            final credential = await FirebaseAuth.instance.currentUser!.updatePassword(pwd1Ctrlr.text);
-                                            //TODO: check if rest of passwords in collection need to be updated for seed change
-                                            UILibrary.setseed(pwd1Ctrlr.text);
-                                          } on FirebaseAuthException catch (e) {
-                                            //print('Something went wrong');
-                                            UILibrary.showError(context, "Error", "An unkown error occurred:\n$e");
-                                          }
-                                          pwd1Ctrlr.clear();
-                                          pwd2Ctrlr.clear();
-                                        }
-                                      },
-                                      child: const Text('Submit')
-                                    )
-                                  ],
-                                ),
+                                        },
+                                        child: const Text('Submit')
+                                      )
+                                    ]
+                                  )
+                                )
                               )
                             )
                           )
@@ -289,16 +315,10 @@ class Settings extends State<UserSettingsScreen> {
                                                 ),
                                                 child: const Text('Delete'),
                                                 onPressed: () {
-                                                  deleteCollection(FirebaseAuth.instance.currentUser!.email.toString());
-                                                  FirebaseAuth.instance.currentUser!.delete();
+                                                  deleteUser();
                                                   Navigator.of(context).pop();
                                                   Navigator.of(context).pop();
                                                   Navigator.of(context).pop();
-                                                  //firebase oauth logout
-                                                  try {
-                                                  FirebaseAuth.instance.signOut();
-                                                  FirebaseAuth.instance.signOut();
-                                                  } catch(e) {}
                                                   //go to the landing screen
                                                   Navigator.pushReplacementNamed(context, '/');
                                                 },
@@ -342,7 +362,7 @@ class Settings extends State<UserSettingsScreen> {
             )
           )
         )
-      )
+      //)
     );
   }
 }
