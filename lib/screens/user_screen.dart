@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
-import 'package:encrypt/encrypt.dart' as spicy_salsa;
 import 'package:app/UILibrary.dart';
 
 class UserScreen extends StatelessWidget {
@@ -63,7 +62,7 @@ class _UserWidgetState extends State<UserWidget> {
   Future<void> _updateEntry(BuildContext context, String pwd, Entry oldData) async {
     Map<String, dynamic> saveData = {
       'name': oldData.name,
-      'pword': pwd
+      'pword': UILibrary.encrypt(pwd, UILibrary.getseed())
     };
     FirebaseFirestore.instance
       .collection(emailaddress.toString())
@@ -140,7 +139,7 @@ class _UserWidgetState extends State<UserWidget> {
         var pwdCtrlr=TextEditingController();
         pwdCtrlr.text=currentEntry.pword!;
         //TODO: ENCRYPT
-        //pwdCtrlr.text=salsaDecrypt(currentEntry.pword!, seed);//currentEntry.pword!;
+        pwdCtrlr.text=UILibrary.decrypt(currentEntry.pword!, seed);//currentEntry.pword!;
         return Center(
           child: Container(
             width: 850,
@@ -171,8 +170,7 @@ class _UserWidgetState extends State<UserWidget> {
                             UILibrary.showError(context, 'Empty Password!', "Please enter a password");
                             return;
                           }
-                          pwd=pwdCtrlr.text; //TODO: ENCRYPT
-                          _updateEntry(context, pwd, currentEntry);
+                          _updateEntry(context, pwdCtrlr.text, currentEntry);
                           pwdCtrlr.clear();
                           Navigator.of(context).pop();
                         },
@@ -239,8 +237,9 @@ class _UserWidgetState extends State<UserWidget> {
                       //print(salsaDecrypt(currentEntry.pword, seed));
                       //TODO: ENCRYPT
                       Clipboard.setData(ClipboardData(
-                        text: currentEntry.pword)); /*salsaDecrypt(
-                              currentEntry.pword, seed)));*/
+                        text: //currentEntry.pword)); /*
+                        UILibrary.decrypt(
+                              currentEntry.pword, seed)));
                     },
                     child: SizedBox(
                       width: 200,
@@ -346,9 +345,9 @@ class _UserWidgetState extends State<UserWidget> {
                             }
                             Map<String, dynamic> saveData = {
                               'name': nameController.text,
-                              'pword': pwordController.text
+                              'pword': //pwordController.text
                                   //TODO: ENCRYPT
-                                  //salsaEncrypt(pwordController.text, seed)
+                                  UILibrary.encrypt(pwordController.text, seed)
                             };
                             nameController.clear();
                             pwordController.clear();
@@ -373,9 +372,9 @@ class _UserWidgetState extends State<UserWidget> {
                             }
                             Map<String, dynamic> saveData = {
                               'name': nameController.text,
-                              'pword': pwordController.text
+                              'pword': //pwordController.text
                                   //TODO: ENCRYPT
-                                  //salsaEncrypt(pwordController.text, seed)
+                                  UILibrary.encrypt(pwordController.text, seed)
                             };
                             nameController.clear();
                             pwordController.clear();
@@ -403,9 +402,9 @@ class _UserWidgetState extends State<UserWidget> {
                           }
                           Map<String, dynamic> saveData = {
                             'name': nameController.text,
-                            'pword': pwordController.text
+                            'pword': //pwordController.text
                                 //TODO: ENCRYPT
-                                //salsaEncrypt(pwordController.text, seed)
+                                UILibrary.encrypt(pwordController.text, seed)
                           };
                           nameController.clear();
                           pwordController.clear();
@@ -447,22 +446,4 @@ class Entry {
       pword: data?['pword'],
     );
   }
-}
-
-String salsaEncrypt(String text, String seed) {
-  final key = spicy_salsa.Key.fromUtf8(seed);
-  final iv = spicy_salsa.IV.fromLength(8);
-  final encrypter = spicy_salsa.Encrypter(spicy_salsa.Salsa20(key));
-
-  return encrypter.encrypt(text, iv: iv).base64;
-}
-
-String salsaDecrypt(String text, String seed) {
-  final key = spicy_salsa.Key.fromUtf8(seed);
-  final iv = spicy_salsa.IV.fromLength(8);
-  final decrypter = spicy_salsa.Encrypter(spicy_salsa.Salsa20(key));
-
-  return decrypter
-      .decrypt(spicy_salsa.Encrypted.from64(text), iv: iv)
-      .toString();
 }

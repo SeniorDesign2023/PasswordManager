@@ -51,12 +51,15 @@ class SignUpFormState extends State<SignUpForm> {
   //Matt
   //Modified by Tyler (for UI)
   void _handleSubmit(uname, pword, pword2) async {
-    if (UILibrary.pwdValidation(pword, pword2, context)) {
+    if(UILibrary.pwdValidation(pword, pword2, context)) {
       try {
         final credential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: uname, password: pword);
         widget.function(pword);
         Navigator.pushReplacementNamed(context, '/user');
+                    _pwordConfirmationController.clear();
+                    _pwordController.clear();
+                    _unameController.clear();
       } on FirebaseAuthException catch (e) {
         if((uname=='')||(pword=='')||(pword2=='')) {
           UILibrary.showError(context, "Missing", "Please fill the sign up for completely");
@@ -101,9 +104,6 @@ class SignUpFormState extends State<SignUpForm> {
                   ),
                   onFieldSubmitted: (value) {
                     _handleSubmit(value, _pwordController.text, _pwordConfirmationController.text);
-                    _pwordConfirmationController.clear();
-                    _pwordController.clear();
-                    _unameController.clear();
                   },
                 ),
                 const SizedBox(height: 15), 
@@ -119,9 +119,6 @@ class SignUpFormState extends State<SignUpForm> {
                   ),
                   onFieldSubmitted: (value) {
                     _handleSubmit(_unameController.text, value, _pwordConfirmationController.text);
-                    _pwordConfirmationController.clear();
-                    _pwordController.clear();
-                    _unameController.clear();
                   }
                 ),
                 const SizedBox(height: 15), 
@@ -138,9 +135,6 @@ class SignUpFormState extends State<SignUpForm> {
                   onFieldSubmitted: (value) {
                     _handleSubmit(
                         _unameController.text, _pwordController.text, value);
-                    _pwordConfirmationController.clear();
-                    _pwordController.clear();
-                    _unameController.clear();
                   }
                 ),
                 const SizedBox(height: 25), 

@@ -17,15 +17,29 @@ class UserSettingsScreen extends StatefulWidget {
 class Settings extends State<UserSettingsScreen> {
   final db = FirebaseFirestore.instance;
 
-  //used to change user email
-  //Tyler O
-  void changeCollectionName(String user, String newUser) async {
-    log("$user\t$newUser");
+  Future<void> updateEncryption(String seed, String pwd) async {
+    String user=FirebaseAuth.instance.currentUser!.email!;
+    print("user: $user");
     var data=await db.collection(user).get();
     for (var docSnapshot in data.docs) {
       Map<String, dynamic> e={
         'name': docSnapshot.data()["name"],
-        'pword': docSnapshot.data()["pword"]
+        'pword': UILibrary.encrypt(UILibrary.decrypt(docSnapshot.data()["pword"], seed), pwd)
+      };
+      print("$user: ${docSnapshot.id} -> ${e["name"]}=${e["pword"]} for $seed to $pwd");
+      await db.collection(user).doc(docSnapshot.id).update(e);
+    }
+    return;
+  }
+
+  //used to change user email
+  //Tyler O
+  void changeCollectionName(String user, String newUser) async {
+    var data=await db.collection(user).get();
+    for (var docSnapshot in data.docs) {
+      Map<String, dynamic> e={
+        'name': docSnapshot.data()["name"],
+        'pword': docSnapshot.data()["pword"]//already encrypted
       };
       db.collection(newUser).add(e);
     }
@@ -205,11 +219,13 @@ class Settings extends State<UserSettingsScreen> {
                                         onFieldSubmitted: (value) async {
                                           if (UILibrary.pwdValidation(pwd1Ctrlr.text, pwd2Ctrlr.text, context)) {
                                             try {
-                                              final credential = await FirebaseAuth.instance.currentUser!.updatePassword(pwd1Ctrlr.text);
-                                              //TODO: check if rest of passwords in collection need to be updated for seed change
+                                              print("pwd good => ${pwd1Ctrlr.text}");
+                                              await updateEncryption(UILibrary.getseed(), UILibrary.makeSeed(pwd1Ctrlr.text));
                                               UILibrary.setseed(pwd1Ctrlr.text);
+                                              print("seed set");
+                                              await FirebaseAuth.instance.currentUser!.updatePassword(pwd1Ctrlr.text);
+                                              print("FBA pwd updated");
                                             } on FirebaseAuthException catch (e) {
-                                              //print('Something went wrong');
                                               UILibrary.showError(context, "Error", "An unkown error occurred:\n$e");
                                             }
                                             pwd1Ctrlr.clear();
@@ -232,11 +248,10 @@ class Settings extends State<UserSettingsScreen> {
                                         onFieldSubmitted: (value) async {
                                           if (UILibrary.pwdValidation(pwd1Ctrlr.text, pwd2Ctrlr.text, context)) {
                                             try {
-                                              final credential = await FirebaseAuth.instance.currentUser!.updatePassword(pwd1Ctrlr.text);
-                                              //TODO: check if rest of passwords in collection need to be updated for seed change
+                                              await updateEncryption(UILibrary.getseed(), UILibrary.makeSeed(pwd1Ctrlr.text));
                                               UILibrary.setseed(pwd1Ctrlr.text);
+                                              await FirebaseAuth.instance.currentUser!.updatePassword(pwd1Ctrlr.text);
                                             } on FirebaseAuthException catch (e) {
-                                              //print('Something went wrong');
                                               UILibrary.showError(context, "Error", "An unkown error occurred:\n$e");
                                             }
                                             pwd1Ctrlr.clear();
@@ -250,15 +265,15 @@ class Settings extends State<UserSettingsScreen> {
                                         onPressed: () async {
                                           if (UILibrary.pwdValidation(pwd1Ctrlr.text, pwd2Ctrlr.text, context)) {
                                             try {
-                                              final credential = await FirebaseAuth.instance.currentUser!.updatePassword(pwd1Ctrlr.text);
-                                              //TODO: check if rest of passwords in collection need to be updated for seed change
+                                              await updateEncryption(UILibrary.getseed(), UILibrary.makeSeed(pwd1Ctrlr.text));
                                               UILibrary.setseed(pwd1Ctrlr.text);
+                                              await FirebaseAuth.instance.currentUser!.updatePassword(pwd1Ctrlr.text);
                                             } on FirebaseAuthException catch (e) {
-                                              //print('Something went wrong');
                                               UILibrary.showError(context, "Error", "An unkown error occurred:\n$e");
                                             }
                                             pwd1Ctrlr.clear();
                                             pwd2Ctrlr.clear();
+                                            Navigator.of(context).pop();
                                           }
                                         },
                                         child: const Text('Submit')

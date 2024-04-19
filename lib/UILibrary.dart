@@ -9,6 +9,7 @@ import 'package:app/screens/login_screen.dart';
 import 'package:app/screens/signup_screen.dart';
 import 'package:app/screens/user_screen.dart';
 import 'package:app/screens/user_settings_screen.dart';
+import 'package:encrypt/encrypt.dart' as spicy_salsa;
 
 //dart imports for crypto
 import 'package:crypto/crypto.dart';
@@ -61,6 +62,11 @@ class UILibrary {
   static void setseed(string) {
     _seed = md5.convert(utf8.encode(string)).toString();
     //print(_seed);
+  }
+
+  static String makeSeed(String string) {
+    return md5.convert(utf8.encode(string)).toString();
+
   }
 
   //getseed
@@ -189,6 +195,26 @@ class UILibrary {
       UILibrary.showError(context, "Password match", "Please make sure passwords match");
       return false;
     }
+  }
+
+  //Matt B
+  static String encrypt(String text, String seed) {
+    final key = spicy_salsa.Key.fromUtf8(seed);
+    final iv = spicy_salsa.IV.fromLength(8);
+    final encrypter = spicy_salsa.Encrypter(spicy_salsa.Salsa20(key));
+
+    return encrypter.encrypt(text, iv: iv).base64;
+  }
+
+  //Matt B
+  static String decrypt(String text, String seed) {
+    final key = spicy_salsa.Key.fromUtf8(seed);
+    final iv = spicy_salsa.IV.fromLength(8);
+    final decrypter = spicy_salsa.Encrypter(spicy_salsa.Salsa20(key));
+
+    return decrypter
+        .decrypt(spicy_salsa.Encrypted.from64(text), iv: iv)
+        .toString();
   }
 }
 
