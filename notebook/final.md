@@ -59,7 +59,7 @@ Summary of Final Implementation:
 
   Matt: I handled putting the basic functionality of the application together as well as the security aspects of the project and group administrative tasks.
     
-  Tyler:
+  Tyler: Although not implemented I handled the planning and structure of the localized databases and syncing between device's localized databases. I was able to fix many of the UI problems, and clean up the look feel, and presentational view of the application. I also created pop up menus that alerted the user about an error when creating a user login, or attempting to log in. I also handled the deleting, and modifying of exist account/passwords, along with the account deleting. I also created the ability for users to change their master password.
 
 Reflection:
 
