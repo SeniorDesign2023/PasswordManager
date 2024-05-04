@@ -7,8 +7,6 @@ Matthew Bare
 
 Tyler O'Dowd
 
-Cody Danielson
-
 # Installation 
 This project requires the flutter sdk to run. An installation guide for that can be found [here](https://docs.flutter.dev/get-started/install)
 
