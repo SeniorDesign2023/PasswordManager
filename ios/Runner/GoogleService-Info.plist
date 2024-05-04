@@ -2,22 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CLIENT_ID</key>
-	<string>523652369638-m64ff32h055cmhlln93h3dol6st3eqjc.apps.googleusercontent.com</string>
-	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.523652369638-m64ff32h055cmhlln93h3dol6st3eqjc</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDmWabj-tXRUo5dJ0mCjg0FZrPmklfpZOs</string>
+	<string>AIzaSyCMmkp-dohl4v3E5GRbzNKNwkwVdAHFfAQ</string>
 	<key>GCM_SENDER_ID</key>
-	<string>523652369638</string>
+	<string>841985936375</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.app</string>
+	<string>edu.uwyo.cosc.4995-ui</string>
 	<key>PROJECT_ID</key>
-	<string>passwordmanager-d4a10</string>
+	<string>cosc-4995-ui-0</string>
 	<key>STORAGE_BUCKET</key>
-	<string>passwordmanager-d4a10.appspot.com</string>
+	<string>cosc-4995-ui-0.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:523652369638:ios:fb2736642f60702ec5bf27</string>
+	<string>1:841985936375:ios:8a82396cfb082ea1d1fcf2</string>
 </dict>
 </plist>

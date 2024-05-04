@@ -27,9 +27,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
-        return linux;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for linux - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -38,57 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyC7PHpCIC52M_ypgfGRpi87xSMt_EVNZyo',
-    appId: '1:523652369638:web:345a0b71b00a9213c5bf27',
-    messagingSenderId: '523652369638',
-    projectId: 'passwordmanager-d4a10',
-    authDomain: 'passwordmanager-d4a10.firebaseapp.com',
-    storageBucket: 'passwordmanager-d4a10.appspot.com',
+    apiKey: 'AIzaSyCnx70B4DW6Rzo3K-laJvQa9iAp8CrUWBo',
+    appId: '1:727588511842:web:d62dc2cf697b6873a9313b',
+    messagingSenderId: '727588511842',
+    projectId: 'cosc4995-ui-1',
+    authDomain: 'cosc4995-ui-1.firebaseapp.com',
+    storageBucket: 'cosc4995-ui-1.appspot.com',
+    measurementId: 'G-DCD9NXFKWC',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDzAzit7LvToQyx7rtak6tVHxYoccp1rmI',
-    appId: '1:523652369638:android:d9a5f8795c84560cc5bf27',
-    messagingSenderId: '523652369638',
-    projectId: 'passwordmanager-d4a10',
-    storageBucket: 'passwordmanager-d4a10.appspot.com',
+    apiKey: 'AIzaSyDFxjk0Nf4zYQxYgSkPZmFv17iP5AOIE-I',
+    appId: '1:727588511842:android:8c50f1fc254a9397a9313b',
+    messagingSenderId: '727588511842',
+    projectId: 'cosc4995-ui-1',
+    storageBucket: 'cosc4995-ui-1.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDmWabj-tXRUo5dJ0mCjg0FZrPmklfpZOs',
-    appId: '1:523652369638:ios:fb2736642f60702ec5bf27',
-    messagingSenderId: '523652369638',
-    projectId: 'passwordmanager-d4a10',
-    storageBucket: 'passwordmanager-d4a10.appspot.com',
-    iosClientId: '523652369638-m64ff32h055cmhlln93h3dol6st3eqjc.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCPPNoXXU7cETMVADlPtdnU4ts_0TWIzos',
+    appId: '1:727588511842:ios:4733307a57961614a9313b',
+    messagingSenderId: '727588511842',
+    projectId: 'cosc4995-ui-1',
+    storageBucket: 'cosc4995-ui-1.appspot.com',
     iosBundleId: 'com.example.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDmWabj-tXRUo5dJ0mCjg0FZrPmklfpZOs',
-    appId: '1:523652369638:ios:fb2736642f60702ec5bf27',
-    messagingSenderId: '523652369638',
-    projectId: 'passwordmanager-d4a10',
-    storageBucket: 'passwordmanager-d4a10.appspot.com',
-    iosClientId: '523652369638-m64ff32h055cmhlln93h3dol6st3eqjc.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCPPNoXXU7cETMVADlPtdnU4ts_0TWIzos',
+    appId: '1:727588511842:ios:4733307a57961614a9313b',
+    messagingSenderId: '727588511842',
+    projectId: 'cosc4995-ui-1',
+    storageBucket: 'cosc4995-ui-1.appspot.com',
     iosBundleId: 'com.example.app',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyC7PHpCIC52M_ypgfGRpi87xSMt_EVNZyo',
-    appId: '1:523652369638:web:a2ae61e533e8b403c5bf27',
-    messagingSenderId: '523652369638',
-    projectId: 'passwordmanager-d4a10',
-    authDomain: 'passwordmanager-d4a10.firebaseapp.com',
-    storageBucket: 'passwordmanager-d4a10.appspot.com',
-  );
-
-  static const FirebaseOptions linux = FirebaseOptions(
-    apiKey: 'AIzaSyC7PHpCIC52M_ypgfGRpi87xSMt_EVNZyo',
-    appId: '1:523652369638:web:73c118e3e0acc10ec5bf27',
-    messagingSenderId: '523652369638',
-    projectId: 'passwordmanager-d4a10',
-    authDomain: 'passwordmanager-d4a10.firebaseapp.com',
-    storageBucket: 'passwordmanager-d4a10.appspot.com',
   );
 }

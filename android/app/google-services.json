@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "523652369638",
-    "project_id": "passwordmanager-d4a10",
-    "storage_bucket": "passwordmanager-d4a10.appspot.com"
+    "project_number": "841985936375",
+    "project_id": "cosc-4995-ui-0",
+    "storage_bucket": "cosc-4995-ui-0.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:523652369638:android:d9a5f8795c84560cc5bf27",
+        "mobilesdk_app_id": "1:841985936375:android:07028e4e3a666e48d1fcf2",
         "android_client_info": {
           "package_name": "com.example.app"
         }
@@ -20,7 +20,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDzAzit7LvToQyx7rtak6tVHxYoccp1rmI"
+          "current_key": "AIzaSyAdaaBW9v91s_ppOjb-h6IFqOjcBne1Jzs"
         }
       ],
       "services": {

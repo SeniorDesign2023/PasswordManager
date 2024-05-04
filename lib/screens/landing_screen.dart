@@ -1,18 +1,27 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:app/UILibrary.dart';
 
 class LandingScreen extends StatelessWidget {
   const LandingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    //print(FirebaseAuth.instance.currentUser);
     return Scaffold(
-        body: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text('Please log in or sign up'),
+      appBar: AppBar(
+        title: const Center(
+          child: Text("Password Manager!")
+        ),
+        backgroundColor: ColourTheme.appBarBackground
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+        const Text('Please log in or sign up'),
         Padding(
-            padding: EdgeInsets.all(150),
+            padding: const EdgeInsets.all(150),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -20,7 +29,7 @@ class LandingScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.pushNamed(context, '/login');
                     },
-                    child: Text('Login')),
+                    child: const Text('Login')),
                 Container(
                   width: 50,
                   color: Colors.transparent,
@@ -29,10 +38,12 @@ class LandingScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.pushNamed(context, '/signup');
                     },
-                    child: Text('Sign up'))
+                    child: const Text('Sign up'))
               ],
-            ))
-      ],
-    ));
+            )
+          )
+        ],
+      )
+    );
   }
 }
