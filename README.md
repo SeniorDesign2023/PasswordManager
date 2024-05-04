@@ -8,7 +8,7 @@ Matthew Bare
 Tyler O'Dowd
 
 # Installation 
-This project requires the flutter sdk to run. An installation guide for that can be found [here](https://docs.flutter.dev/get-started/install)
+This project requires the flutter sdk version 2.19.6 to run. An installation guide for that can be found [here](https://docs.flutter.dev/get-started/install)
 
 Navigate to the ../PasswordManager/ directory and run the command
 >flutter pub get
